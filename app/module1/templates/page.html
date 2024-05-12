@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>Sample Layout</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    footer {
+        background-color: #f1f1f1;
+        color: #333;
+        text-align: center;
+        padding: 10px 20px;
+        margin-top: 30px;
+    }
+
+    #header {
+        background-color: #f1f1f1;
+        padding: 10px 20px;
+        color: #333;
+    }
+    
+    #top {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    
+    #top h1 {
+        margin-bottom: 10px;
+    }
+    
+    #top h1 a {
+        color: #000;
+        text-decoration: none;
+        font-size: 24px;
+    }
+    
+    .menu_top {
+        width: 100%; 
+        display: flex;
+        justify-content: flex-end;
+    }
+    
+    .search_form input[type="text"] {
+        padding: 8px;
+        margin-right: 10px;
+    }
+    
+    .search_form button {
+        padding: 8px 16px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    
+    #gnb .wfix {
+        display: flex;
+        justify-content: space-around; /* 메뉴 아이템들을 균등하게 분배 */
+        width: 100%;
+    }
+    
+    .lst_menu {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        justify-content: space-between; /* 메뉴 아이템들 간의 간격을 균등하게 조정 */
+        width: 100%;
+    }
+    
+    .lst_menu li {
+        padding: 10px;
+    }
+    
+    .lst_menu a {
+        color: #666;
+        text-decoration: none;
+    }
+    
+    .lst_menu a:hover {
+        color: #000;
+    }
+    
+    .btn_allmenu {
+        display: none; /* 전체 메뉴 버튼은 필요에 따라 표시 */
+    }
+
+
+  
+  .container {
+    position: relative;
+    width: 100%;
+    height: 900px;
+    padding: 20px;
+  }
+  .map, .main_data, .rods, .circles, .regions, .yearly {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+  .map {
+    top: 20px;
+    left: 20px;
+    width: 30%;
+    height: 70%;
+    border: 1px solid #ccc;
+  }
+  .main_data {
+    top: 20px;
+    left: 32%;
+    width: 66%; 
+    height: 25%; 
+    background-color: #add8e6;
+  }
+  
+  .content {
+    text-align: center;
+    flex: 1;
+  }
+  
+  .content h2 {
+    margin: 10px 0;
+    color: #333;
+  }
+  
+  .content p {
+    margin: 5px 0;
+    color: #666;
+  }
+  
+  .content img {
+    width: 50px; 
+    height: auto;
+    margin-top: 10px;
+    border-radius: 50%;
+    border: 1px solid #000;
+  } 
+
+  .rods {
+    top: 25%;
+    left: 32%;
+    width: 66%;
+    height: 25%;
+    background-color: #87ceeb;
+  }
+  .circles {
+    top: 50%;
+    left: 32%;
+    width: 66%; 
+    height: 22%;
+    background-color: #870eeb;
+  }
+
+  .regions {
+    top: 75%;
+    left: 20px;
+    width: 55%;
+    height: 25%;
+    flex-direction: column;
+  }
+  
+  .chart-title {
+    align-self: flex-start;
+    color: #000;
+    margin-top: 5%;
+  }
+  
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    height: 100%;
+    width: 100%;
+  }
+  
+  .bar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 10px;
+  }
+  
+  .bar {
+    width: 20px; /* 막대의 폭을 반으로 줄임 */
+    background-color: #5f9ea0;
+    margin-bottom: 5px; /* 막대와 레이블 사이의 간격 */
+  }
+  
+  .bar:hover {
+    background-color: #31708e; /* 호버 효과 */
+  }
+  
+  .data-label {
+    margin-bottom: 5px; /* 데이터 레이블과 막대 사이의 간격 */
+    font-size: 0.8em; /* 데이터 레이블의 글씨 크기 조정 */
+    color: #000; /* 레이블의 텍스트 색상 */
+  }
+  
+  .label {
+    text-align: center;
+    color: #000; /* 레이블의 텍스트 색상 */
+  }
+  
+  .yearly {
+    top: 75%;
+    left: 55%;
+    width: 45%;
+    height: 25%;
+    border: 1px solid #9c5;
+}
+</style>
+</head>
+<body>
+    <header id='header'>
+        <div id="top">
+            <h1>
+                <a href="main">
+                    환경정보서비스
+                </a>
+            </h1>
+            <div class="menu_top">
+                <!-- 상단 메뉴 추가, 검색 등 -->
+                <form action="search" method="get" class="search_form">
+                    <input type="text" name="q" placeholder="검색어 입력" aria-label="검색">
+                    <button type="submit">검색</button>
+                </form>
+            </div>
+        </div>
+    
+        <nav id="gnb">
+            <div class="wfix">
+                <ul class="lst_menu">
+                    <li class="m1">
+                        <a href="#" class="d1">환경정보서비스란?</a>
+                    </li>
+                    <li class="m2">
+                        <a href="view_data" class="d1">데이터 확인</a>
+                    </li>
+                    <li class="m3">
+                        <a href="visualize" class="d1">시각화 분석</a>
+                    </li>
+                    <li class="m4"><a href="predicts" class="d1">미래 정보 예측</a>
+                    </li>
+                    <li class="m5"><a href="#" class="d1">건의사항</a>
+                    </li>
+                </ul>
+                <a href="javascript:;" class="btn_allmenu"><i class="ico_comm">전체메뉴 열기/닫기</i></a>
+            </div>
+        </nav>
+    </header>
+<div class="container">
+
+  <div class="map">
+    <object id="svgMap" type="image/svg+xml" data="{{ url_for('static', filename='img/map_svg.svg') }}" 
+            width="100%" height="80%">Your browser does not support SVG</object>
+  </div>
+
+  <div class="main_data">
+    <div class="content">
+      <h2>통합대기환경<br>지수</h2>
+      <p>좋음(30)</p>
+      <img src="{{ url_for('static', filename='img/condition_good.png') }}" alt="image1">
+    </div>
+    <div class="content">
+      <h2>미세먼지<br>(PM-10)</h2>
+      <p>보통(33㎍/㎥)</p>
+      <img src="{{ url_for('static', filename='img/condition_common.png') }}" alt="image2">
+    </div>
+    <div class="content">
+      <h2>초미세먼지<br>(PM-2.5)</h2>
+      <p>좋음(15㎍/㎥)</p>
+      <img src="{{ url_for('static', filename='img/condition_good.png') }}" alt="image3">
+    </div>
+    <div class="content">
+      <h2>오존<br>(O3)</h2>
+      <p>보통(0.052ppm)</p>
+      <img src="{{ url_for('static', filename='img/condition_common.png') }}" alt="image4">
+    </div>
+  </div>
+  
+  <div class="rods">Rods</div>
+  <div class="circles">Circles</div>
+
+  <div class="regions">
+    <div class="chart-title">지역별 미세먼지 수치(㎍/㎥)</div>
+    <div class="bar-chart">
+      {% for region_data in region_datas %}
+        <div class="bar-container">
+          <div class="data-label">{{ region_data.pmValue }}</div>
+          <div class="bar" data-value="{{ region_data.pmValue }}" style="height: {{ region_data.pmValue }}px;" title="{{ region_data.region }}: {{ region_data.pmValue }}㎍/㎥"></div>
+          <div class="label">{{ region_data.region }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="yearly">
+    <canvas id="yearlyChart"></canvas>
+  </div>
+  
+</div>
+<footer>
+  <p>Footer Content</p>
+</footer>
+
+<script>
+    window.addEventListener('load', function() {
+        // svg 이미지 작업 변수
+        const svgObject = document.getElementById('svgMap').contentDocument;
+
+        // 지역별 수치 작업 변수
+        const barChart = document.querySelector('.bar-chart');
+        const bars = document.querySelectorAll('.bar');
+        const maxData = Math.max(...Array.from(bars, bar => parseInt(bar.dataset.value)));
+      
+        const containerHeight = barChart.clientHeight;
+
+        if (svgObject) {
+            const paths = svgObject.querySelectorAll('path');
+            paths.forEach(path => {
+                path.addEventListener('mouseenter', function() {
+                    this.style.fill = '#ff0000'; // 마우스 오버 시 색상 변경
+                });
+                path.addEventListener('mouseleave', function() {
+                    this.style.fill = ''; // 원래 색상으로 복원
+                });
+            });
+        }
+
+        bars.forEach(bar => {
+            const value = parseInt(bar.dataset.value);
+            const height = (value / maxData) * containerHeight/2;
+            bar.style.height = height + 'px';
+        });
+
+    });
+
+    var timeDatas = {{ time_datas | tojson }};
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('yearlyChart').getContext('2d');
+        
+        const chart = new Chart(ctx, {
+          type: 'line', // 선 그래프 형식
+          data: {
+            labels: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'], // X 축 레이블
+            datasets: timeDatas.map(year => ({
+              label: `${year.year}년`,
+              data: year.data,
+              fill: false,
+              borderColor: year.color, // 각 연도별 다른 색상
+              tension: 0.1 // 선의 곡률
+            }))
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true // Y축을 0부터 시작
+              }
+            }
+          }
+        });
+      });
+      
+      
+</script>
+
+
+</body>
+</html>

@@ -17,10 +17,39 @@ load_dotenv()
 
 @bp.route('/')
 def index():
+    data_path = '/Users/jeon-hs4/Desktop/NewCapstone/apiData'
+    current_loc = 'seoul' # 현재 위치로 설정
+    main_data = pd.read_csv(f'{data_path}/dataAPI20240510{current_loc}.csv', index_col=False)
+    region_data = [
+        {"region" : "부산", "pmValue": "120"},
+        {"region" : "충북", "pmValue": "110"},
+        {"region" : "충남", "pmValue": "150"},
+        {"region" : "대구", "pmValue": "120"},
+        {"region" : "경북", "pmValue": "100"},
+        {"region" : "경남", "pmValue": "110"},
+        {"region" : "광주", "pmValue": "130"},
+        {"region" : "경기", "pmValue": "110"},
+        {"region" : "인천", "pmValue": "90"},
+        {"region" : "제주", "pmValue": "120"},
+        {"region" : "전북", "pmValue": "110"},
+        {"region" : "전남", "pmValue": "120"},
+        {"region" : "세종", "pmValue": "114"},
+        {"region" : "서울", "pmValue": "150"},
+        {"region" : "울산", "pmValue": "100"},   
+    ]
     
+    time_data = [
+        {'year': 2022, 'data': [2, 3, 4, 5, 3, 4, 5, 6, 5, 4, 3, 2], 'color': '#B2EBF4'},
+        {'year': 2023, 'data': [3, 4, 2, 5, 6, 7, 6, 5, 4, 3, 2, 1], 'color': '#FAED7D'},
+        {'year': 2024, 'data': [4, 5, 3, 4, 5], 'color': '#FFAD7D'}
+    ]
     
-    return render_template('test.html')
+    return render_template('page.html', data=main_data, region_datas = region_data, time_datas = time_data)
 
+
+@bp.route('/1')
+def page1():
+    return render_template('page2.html')
 
 
 
