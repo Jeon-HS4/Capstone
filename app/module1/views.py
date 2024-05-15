@@ -19,7 +19,7 @@ load_dotenv()
 def index():
     data_path = '/Users/jeon-hs4/Desktop/NewCapstone/apiData'
     current_loc = 'seoul' # 현재 위치로 설정
-    main_data = pd.read_csv(f'{data_path}/dataAPI20240510{current_loc}.csv', index_col=False)
+    #main_data = pd.read_csv(f'{data_path}/dataAPI20240510{current_loc}.csv', index_col=False)
     region_data = [
         {"region" : "부산", "pmValue": "120"},
         {"region" : "충북", "pmValue": "110"},
@@ -44,13 +44,12 @@ def index():
         {'year': 2024, 'data': [4, 5, 3, 4, 5], 'color': '#FFAD7D'}
     ]
     
-    return render_template('page.html', data=main_data, region_datas = region_data, time_datas = time_data)
+    return render_template('page0514Tahee.html', region_datas = region_data, time_datas = time_data)
 
 
 @bp.route('/1')
 def page1():
     return render_template('page2.html')
-
 
 
 @bp.route('/main')

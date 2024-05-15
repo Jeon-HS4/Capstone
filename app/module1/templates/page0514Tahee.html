@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style0514Tahee.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>데이터 확인</title>
+ <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+    footer {
+        background-color: #f1f1f1;
+        color: #333;
+        text-align: center;
+        padding: 10px 20px;
+        margin-top: 30px;
+    }
+
+    #header {
+        background-color: #f1f1f1;
+        padding: 10px 20px;
+        color: #333;
+    }
+    
+    #top {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    
+    #top h1 {
+        margin-bottom: 10px;
+    }
+    
+    #top h1 a {
+        color: #000;
+        text-decoration: none;
+        font-size: 24px;
+    }
+    
+    .menu_top {
+        width: 100%; 
+        display: flex;
+        justify-content: flex-end;
+    }
+    
+    .search_form input[type="text"] {
+        padding: 8px;
+        margin-right: 10px;
+    }
+    
+    .search_form button {
+        padding: 8px 16px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    
+    #gnb .wfix {
+        display: flex;
+        justify-content: space-around; /* 메뉴 아이템들을 균등하게 분배 */
+        width: 100%;
+    }
+    
+    .lst_menu {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        justify-content: space-between; /* 메뉴 아이템들 간의 간격을 균등하게 조정 */
+        width: 100%;
+    }
+    
+    .lst_menu li {
+        padding: 10px;
+    }
+    
+    .lst_menu a {
+        color: #666;
+        text-decoration: none;
+    }
+    
+    .lst_menu a:hover {
+        color: #000;
+    }
+    
+    .btn_allmenu {
+        display: none; /* 전체 메뉴 버튼은 필요에 따라 표시 */
+    }
+
+
+  
+  .container {
+    flex:1;
+    height: 900px;
+    padding: 20px;
+  }
+  .map, .main_data, .rods, .circles, .regions, .yearly {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+  .map {
+    top: 20px;
+    left: 20px;
+    width: 30%;
+    height: 70%;
+    border: 1px solid #ccc;
+  }
+  .main_data {
+    top: 20px;
+    left: 32%;
+    width: 66%; 
+    height: 25%; 
+    background-color: #add8e6;
+  }
+  
+  .content {
+    text-align: center;
+    flex: 1;
+  }
+  
+  .content h2 {
+    margin: 10px 0;
+    color: #333;
+  }
+  
+  .content p {
+    margin: 5px 0;
+    color: #666;
+  }
+  
+  .content img {
+    width: 50px; 
+    height: auto;
+    margin-top: 10px;
+    border-radius: 50%;
+    border: 1px solid #000;
+  } 
+
+  .rods {
+    top: 25%;
+    left: 32%;
+    width: 66%;
+    height: 25%;
+    background-color: #87ceeb;
+  }
+  .circles {
+    top: 50%;
+    left: 32%;
+    width: 66%; 
+    height: 22%;
+    background-color: #870eeb;
+  }
+
+  .regions {
+    top: 75%;
+    left: 20px;
+    width: 55%;
+    height: 25%;
+    flex-direction: column;
+  }
+  
+  .chart-title {
+    align-self: flex-start;
+    color: #000;
+    margin-top: 5%;
+  }
+  
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    height: 100%;
+    width: 100%;
+  }
+  
+  .bar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 10px;
+  }
+  
+  .bar {
+    width: 20px; /* 막대의 폭을 반으로 줄임 */
+    background-color: #5f9ea0;
+    margin-bottom: 5px; /* 막대와 레이블 사이의 간격 */
+  }
+  
+  .bar:hover {
+    background-color: #31708e; /* 호버 효과 */
+  }
+  
+  .data-label {
+    margin-bottom: 5px; /* 데이터 레이블과 막대 사이의 간격 */
+    font-size: 0.8em; /* 데이터 레이블의 글씨 크기 조정 */
+    color: #000; /* 레이블의 텍스트 색상 */
+  }
+  
+  .label {
+    text-align: center;
+    color: #000; /* 레이블의 텍스트 색상 */
+  }
+  
+  .yearly {
+    top: 75%;
+    left: 55%;
+    width: 45%;
+    height: 25%;
+    border: 1px solid #9c5;
+}
+</style>
+</head>
+<body>
+    <header id='header'>
+        <div id="top">
+            <h1>
+                <a href="main">
+                    환경정보서비스
+                </a>
+            </h1>
+        </div>
+    
+        <nav id="gnb">
+            <div class="wfix">
+                <ul class="lst_menu">
+                    <li class="m1">
+                        <a href="#" class="d1">환경정보서비스란?</a>
+                    </li>
+                    <li class="m2">
+                        <a href="view_data" class="d1">데이터 확인</a>
+                    </li>
+                    <li class="m3"><a href="predicts" class="d1">미래 정보 예측</a>
+                    </li>
+                    
+                </ul>
+                <a href="javascript:;" class="btn_allmenu"><i class="ico_comm">전체메뉴 열기/닫기</i></a>
+            </div>
+        </nav>
+    </header>
+<div class="container">
+    <aside>
+        <h2>API 목록</h2>
+        <ul>
+            <li><a href="#">에어코리아 기상정보</a></li>
+            <li><a href="#">중금속 기상 정보 확인</a></li>
+            <li><a href="#">해수면 등락</a></li>
+            <li><a href="#">환경 통계</a></li>
+            <li><a href="#">기상청 통계</a></li>
+        </ul>
+    </aside>
+    
+    <main>
+      
+        <h2>주요 통계</h2>
+        <div class="statistics">
+            
+              <div class="controls">
+                <button id="sort-button">정렬(내림차순)</button>
+                <button id="sort-button">정렬(오름차순)</button>
+                <button id="sort-button">행렬 전환</button>
+              </div>
+        </div>
+      <div class="table-container">
+          <table id="data-table"> 
+              <thead>
+                  <tr>
+                      <th> API 이름</th>
+                      <th> 24년 5월 14일</th>
+                      <th> 24년 5월 13일</th>
+                      <th> 24년 5월 12일</th>
+                      <th> 24년 5월 11일</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>통합 환경 지수</td>
+                      <td>NAN</td>
+                      <td>NAN</td>
+                      <td>NAN</td>
+                      <td>NAN</td>
+                  </tr>
+                  <tr>
+                      <td>미세먼지 pm10</td>
+                      <td>NAN</td>
+                      <td>NAN</td>
+                      <td>NAN</td>
+                      <td>NAN</td>
+                  </tr>
+                  <tr>
+                    <td>오존지수</td>
+                    <td>NAN</td>
+                      <td>NAN</td>
+                      <td>NAN</td>
+                      <td>NAN</td>
+                </tr>
+                <tr>
+                  <td>이산화 탄소 지수</td>
+                  <td>NAN</td>
+                    <td>NAN</td>
+                    <td>NAN</td>
+                    <td>NAN</td>
+              </tr>
+              </tbody>
+          </table>
+      </div>
+      <div class="filter">
+        <label for="filter-input">필터:</label>
+        <ul>
+          <li><button id="filter-button">통합환경지수</button></li>
+          <li><button id="filter-button">오존지수</button></li>
+          <li><button id="filter-button">미세먼지 pm10</button></li>
+          
+        </ul>
+        <br>
+        <input type="text" id="filter-input">
+        <button id="filter-button">적용</button>
+    </div>
+    </main>
+
+</div>
+<!--
+<footer>
+  <p>경영캡스톤 디자인  &copy; 2023. 모든 권리 보유.</p>
+        <p><a href="#">한국공학대학교</a> | 전형서 , 정태희 , 설웅</p>
+</footer>
+-->
+<script>
+    window.addEventListener('load', function() {
+        // svg 이미지 작업 변수
+        const svgObject = document.getElementById('svgMap').contentDocument;
+
+        // 지역별 수치 작업 변수
+        const barChart = document.querySelector('.bar-chart');
+        const bars = document.querySelectorAll('.bar');
+        const maxData = Math.max(...Array.from(bars, bar => parseInt(bar.dataset.value)));
+      
+        const containerHeight = barChart.clientHeight;
+
+        if (svgObject) {
+            const paths = svgObject.querySelectorAll('path');
+            paths.forEach(path => {
+                path.addEventListener('mouseenter', function() {
+                    this.style.fill = '#ff0000'; // 마우스 오버 시 색상 변경
+                });
+                path.addEventListener('mouseleave', function() {
+                    this.style.fill = ''; // 원래 색상으로 복원
+                });
+            });
+        }
+
+        bars.forEach(bar => {
+            const value = parseInt(bar.dataset.value);
+            const height = (value / maxData) * containerHeight/2;
+            bar.style.height = height + 'px';
+        });
+
+    });
+
+    var timeDatas = { time_datas , tojson };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('yearlyChart').getContext('2d');
+        
+        const chart = new Chart(ctx, {
+          type: 'line', // 선 그래프 형식
+          data: {
+            labels: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'], // X 축 레이블
+            datasets: timeDatas.map(year => ({
+              label: `${year.year}년`,
+              data: year.data,
+              fill: false,
+              borderColor: year.color, // 각 연도별 다른 색상
+              tension: 0.1 // 선의 곡률
+            }))
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true // Y축을 0부터 시작
+              }
+            }
+          }
+        });
+      });
+      
+      
+</script>
+
+
+</body>
+</html>
