@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>메인페이지</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/baseTemplates.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/mainPage.css') }}">
+    <script src="{{ url_for('static', filename='js/mainPage.js') }}"></script>
+</head>
+<body>
+    <header id='header'>
+        <div id="top">
+            <h1>
+                <a href="page">
+                    환경정보서비스
+                </a>
+            </h1>
+            <div class="menu_top">
+                </form>
+            </div>
+        </div>
+
+        <nav id="gnb">
+            <div class="wfix">
+                <ul class="lst_menu">
+                    <li class="m1"><a href="introduce" class="d1">환경정보서비스란?</a></li>
+                    <li class="m2"><a href="view_data" class="d1">데이터 확인</a></li>
+                    <li class="m4"><a href="predicts" class="d1">미래 정보 예측</a></li>
+                    <li class="m5"><a href="FAQ" class="d1">FAQ</a></li>
+                </ul>
+                <a href="javascript:;" class="btn_allmenu"><i class="ico_comm">전체메뉴 열기/닫기</i></a>
+            </div>
+        </nav>
+    </header>
+    <div id="main-content">
+      <div id="top-content">
+  <div class="map">
+    <div class="clock" id="clock">00:00:00</div>
+    <object id="svgMap" type="image/svg+xml" data="{{ url_for('static', filename='img/map_svg.svg') }}" 
+            width="100%" height="80%">Your browser does not support SVG</object>
+  </div>
+  <div class="right_container">
+    <div class="slideContainer" id="slideContainer">
+      <button class="slide-btn prev" onclick="moveSlides(-1)">&#10094;</button>
+      <div class="slides">
+          <img src="{{ url_for('static', filename='img/condition_good.png') }}" alt="image1" alt="Slide 1">
+          <img src="{{ url_for('static', filename='img/condition_good.png') }}" alt="image3" alt="Slide 2">
+          <img src="{{ url_for('static', filename='img/condition_common.png') }}" alt="image1" alt="Slide 3">
+          <img src="{{ url_for('static', filename='img/condition_good.png') }}" alt="image4" alt="Slide 4">
+          <img src="{{ url_for('static', filename='img/condition_good.png') }}" alt="image5" alt="Slide 5">
+          <img src="{{ url_for('static', filename='img/condition_good.png') }}" alt="image6" alt="Slide 6">
+      </div>
+      <button class="slide-btn next" onclick="moveSlides(1)">&#10095;</button>
+    </div>
+    <div class="box" id="box2">
+      <div class="sub-box" onclick="updateExtraContent('지역별 1 정보', '연도별 정보 1')">Sub Box 1</div>
+      <div class="sub-box" onclick="updateExtraContent('지역별 2 정보', '연도별 정보 2')">Sub Box 2</div>
+  </div>
+  <div class="box" id="box3">
+      <div class="sub-box" onclick="updateExtraContent('지역별 3 정보', '연도별 정보 3')">Sub Box 3</div>
+      <div class="sub-box" onclick="updateExtraContent('지역별 4 정보', '연도별 정보 4')">Sub Box 4</div>
+  </div>
+</div>
+</div>
+<div class="extra-box">
+  <div class="extra-sub-box" id="extra1">Extra Box 1 Content</div>
+  <div class="extra-sub-box" id="extra2">Extra Box 2 Content</div>
+</div>
+</div>
+<footer>
+  <div class="footer-slider">
+    <div class="footer-slide" style="background-color: #a29bfe;">Slide 1 Content</div>
+    <div class="footer-slide" style="background-color: #00b894;">Slide 2 Content</div>
+    <div class="footer-slide" style="background-color: #fdcb6e;">Slide 3 Content</div>
+    <div class="footer-slide" style="background-color: #a29bfe;">Slide 1 Content</div>
+  </div>
+</footer>
+</div>
+<script>
+    const region_datas = {{ region_data | tojson }};
+    updateClock(); // 초기 시간 설정
+    setInterval(updateClock, 1000); // 매 초마다 시간 업데이트
+    setInterval(moveFooterSlide, 3000); // 3초마다 슬라이드 이동
+</script>
+
+</body>
+</html>

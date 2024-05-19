@@ -1,0 +1,107 @@
+.dataFrame {
+    display: flex;
+    flex:1;
+    overflow-y:scroll;
+    height: 600px;
+}
+.details {
+    flex-grow: 1;
+}
+
+.container {
+    display: flex;
+    flex:1;
+}
+
+aside {
+    width: 12.5%;
+    background-color: #f4f4f4;
+    padding: 20px;
+    overflow-y: auto;
+    height: auto ;
+}
+
+aside h2 {
+    margin-top: 0;
+}
+
+aside ul {
+    list-style: none;
+    padding: 0;
+}
+
+aside ul li {
+    margin-bottom: 10px;
+}
+
+aside ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+main {
+    width: 75%;
+    padding: 20px;
+}
+
+.statistics {
+    display: flex;
+
+}
+
+.stat {
+    background-color: #e0e0e0;
+    padding: 20px;
+    width: 30%;
+    text-align: center;
+    border-radius: 5px;
+}
+
+
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
+.controls, .filter {
+    padding: 10px;
+    background-color: #eaeaea;
+}
+
+.table-container {
+    flex: 1;
+    overflow: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.filter {
+    width: 12%;
+    display: flex;
+    align-items: center;
+}
+
+.filter label {
+    margin-right: 10px;
+}
+
+.filter input {
+    margin-right: 10px;
+}
