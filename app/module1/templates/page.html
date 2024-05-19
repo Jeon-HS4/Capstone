@@ -313,7 +313,8 @@
 <script>
     window.addEventListener('load', function() {
         // svg 이미지 작업 변수
-        const svgObject = document.getElementById('svgMap').contentDocument;
+        const svgObject = document.getElementById('svgMap');
+        var svgDoc;
 
         // 지역별 수치 작업 변수
         const barChart = document.querySelector('.bar-chart');
@@ -321,32 +322,81 @@
         const maxData = Math.max(...Array.from(bars, bar => parseInt(bar.dataset.value)));
       
         const containerHeight = barChart.clientHeight;
-
-        if (svgObject) {
-            const paths = svgObject.querySelectorAll('path');
-            paths.forEach(path => {
-                path.addEventListener('mouseenter', function() {
-                    this.style.fill = '#ff0000'; // 마우스 오버 시 색상 변경
-                });
-                path.addEventListener('mouseleave', function() {
-                    this.style.fill = ''; // 원래 색상으로 복원
-                });
-            });
-        }
-
+     
         bars.forEach(bar => {
-            const value = parseInt(bar.dataset.value);
-            const height = (value / maxData) * containerHeight/2;
-            bar.style.height = height + 'px';
+          const value = parseInt(bar.dataset.value);
+          const height = (value / maxData) * containerHeight/2;
+          bar.style.height = height + 'px';
         });
 
+        function setupSVG(svgDoc) {
+          if (svgDoc) {
+              const paths = svgDoc.querySelectorAll('path');
+              const region_datas = {{region_datas | tojson}};
+      
+              console.log("Found paths:", paths.length); // 로그에 경로의 수를 출력하여 실제로 찾았는지 확인
+      
+              paths.forEach(path => {
+                  path.addEventListener('mouseenter', function() {
+                      this.style.fill = '#ff0000'; // 마우스 오버 시 색상 변경
+                  });
+                  path.addEventListener('mouseleave', function() {
+                      this.style.fill = ''; // 원래 색상으로 복원
+                  });
+              });
+              region_datas.forEach(function(data) {
+                  var region = data.region;
+                  var regionId = data.regionId;
+                  var pmValue = parseInt(data.pmValue);
+                  console.log(data);
+      
+                  // PM 값에 따라 색상 지정
+                  var color = '';
+                  if (pmValue <= 30) {
+                      color = '#4173b6';
+                  } else if (pmValue <= 80) {
+                      color = '#4e8f4b';
+                  } else if (pmValue <= 150) {
+                      color = '#e7933d';
+                  } else {
+                      color = '#b03730';
+                  }
+      
+                  // 해당 지역의 title 속성 값을 사용하여 SVG 요소를 찾고, fill 속성을 변경
+                  var path = svgDoc.getElementById('totalMap_'+regionId);
+                  if (path) {
+                      path.style.fill = color;
+                  }
+                  console.log(regionId, color);
+              });
+      
+      
+      
+          } else {
+              console.log("SVG Document is not accessible.");
+          }
+      }
+      
+      if (svgObject.contentDocument) {
+          // 이미 로드된 경우
+          console.log("SVG is already loaded.");
+          setupSVG(svgObject.contentDocument);
+      } else {
+          // 로드를 기다림
+          svgObject.addEventListener('load', function() {
+              setupSVG(svgObject.contentDocument);
+          });
+      }
     });
+
 
     var timeDatas = {{ time_datas | tojson }};
 
     document.addEventListener('DOMContentLoaded', function() {
         const ctx = document.getElementById('yearlyChart').getContext('2d');
         
+        
+
         const chart = new Chart(ctx, {
           type: 'line', // 선 그래프 형식
           data: {

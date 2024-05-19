@@ -21,21 +21,23 @@ def index():
     current_loc = 'seoul' # 현재 위치로 설정
     main_data = pd.read_csv(f'{data_path}/dataAPI20240510{current_loc}.csv', index_col=False)
     region_data = [
-        {"region" : "부산", "pmValue": "120"},
-        {"region" : "충북", "pmValue": "110"},
-        {"region" : "충남", "pmValue": "150"},
-        {"region" : "대구", "pmValue": "120"},
-        {"region" : "경북", "pmValue": "100"},
-        {"region" : "경남", "pmValue": "110"},
-        {"region" : "광주", "pmValue": "130"},
-        {"region" : "경기", "pmValue": "110"},
-        {"region" : "인천", "pmValue": "90"},
-        {"region" : "제주", "pmValue": "120"},
-        {"region" : "전북", "pmValue": "110"},
-        {"region" : "전남", "pmValue": "120"},
-        {"region" : "세종", "pmValue": "114"},
-        {"region" : "서울", "pmValue": "150"},
-        {"region" : "울산", "pmValue": "100"},   
+        {"region" : "부산", "pmValue": "30", "regionId" : "051"},
+        {"region" : "충북", "pmValue": "110", "regionId" : "043"},
+        {"region" : "충남", "pmValue": "150", "regionId" : "041"},
+        {"region" : "대구", "pmValue": "120", "regionId" : "053"},
+        {"region" : "경북", "pmValue": "20", "regionId" : "054"},
+        {"region" : "경남", "pmValue": "110", "regionId" : "055"},
+        {"region" : "광주", "pmValue": "70", "regionId" : "062 "},
+        {"region" : "경기", "pmValue": "110", "regionId" : "031"},
+        {"region" : "인천", "pmValue": "90", "regionId" : "032"},
+        {"region" : "제주", "pmValue": "330", "regionId" : "064"},
+        {"region" : "전북", "pmValue": "110", "regionId" : "063"},
+        {"region" : "전남", "pmValue": "50", "regionId" : "061"},
+        {"region" : "세종", "pmValue": "114", "regionId" : "044"},
+        {"region" : "서울", "pmValue": "150", "regionId" : "02"},
+        {"region" : "울산", "pmValue": "100", "regionId" : "052"},
+        {"region" : "강원", "pmValue": "200", "regionId" : "033"},
+        {"region" : "대전", "pmValue": "10", "regionId" : "042"},
     ]
     
     time_data = [
