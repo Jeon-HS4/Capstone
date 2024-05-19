@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>미세먼지 지도</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        header{
+            width: 80%;
+            height: 15%;
+        }
+
+        footer{
+            width: 80%;
+            height: 5%
+        }
+
+        #wrap{
+            width: 80%;
+            height: 80%;
+
+        }
+
+        #mapContainer {
+            width: 350px;
+            height: 350px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: white;
+            float: left;
+        }
+
+        #mainlyDataContainer {
+            width: 350px;
+            height: 350px;
+            border: 1px solid #c05;
+            padding: 10px;
+            background-color: white;
+        }
+
+        #imageDiv {
+            border 1px solid #ccc;
+        }
+
+
+    </style>
+</head>
+<body>
+<div id="wrap">
+    <header>
+        <div id="headerWrap">
+            
+        </div>
+    </header>
+
+    <div id="container">
+        <div id="mapContainer">
+            <!-- SVG 파일을 외부 파일로 참조 --> 
+            <object id="svgMap" type="image/svg+xml" data="{{ url_for('static', filename='img/map.svg') }}" 
+            width="350" height="350">Your browser does not support SVG</object>
+        </div>
+
+        <div id="mainlyDataContainer">
+        
+        </div>
+    
+
+
+
+    </div>
+
+    <footer>
+
+    </footer>
+
+</div>
+
+
+    <script>
+        window.addEventListener('load', function() {
+            const svgObject = document.getElementById('svgMap').contentDocument;
+
+            if (svgObject) {
+                const paths = svgObject.querySelectorAll('path');
+                paths.forEach(path => {
+                    path.addEventListener('mouseenter', function() {
+                        this.style.fill = '#ff0000'; // 마우스 오버 시 색상 변경
+                    });
+                    path.addEventListener('mouseleave', function() {
+                        this.style.fill = ''; // 원래 색상으로 복원
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

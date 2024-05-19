@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Visualization</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Data Visualization Example</h1>
+
+    <!-- 각 데이터 열에 대한 canvas 요소 동적 생성 -->
+    {% for dataset in data.datasets %}
+    <div>
+        <h2>{{ dataset.label }}</h2>
+        <canvas id="chart-{{ loop.index }}" width="400" height="200"></canvas>
+    </div>
+    {% endfor %}
+
+    <script>
+        var chartData = {{ data|tojson }};
+        chartData.datasets.forEach(function(dataset, i) {
+            var ctx = document.getElementById('chart-' + (i + 1)).getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [dataset]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
