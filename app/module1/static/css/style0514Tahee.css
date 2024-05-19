@@ -1,6 +1,12 @@
-
-
-
+.dataFrame {
+    display: flex;
+    flex:1;
+    overflow-y:scroll;
+    height: 600px;
+}
+.details {
+    flex-grow: 1;
+}
 
 .container {
     display: flex;
@@ -8,9 +14,11 @@
 }
 
 aside {
-    width: 13%;
+    width: 12.5%;
     background-color: #f4f4f4;
     padding: 20px;
+    overflow-y: auto;
+    height: auto ;
 }
 
 aside h2 {
@@ -32,13 +40,13 @@ aside ul li a {
 }
 
 main {
-    width: 87%;
+    width: 75%;
     padding: 20px;
 }
 
 .statistics {
     display: flex;
-    justify-content: space-between;
+
 }
 
 .stat {
@@ -49,18 +57,6 @@ main {
     border-radius: 5px;
 }
 
-.reports .report {
-    background-color: #f9f9f9;
-    padding: 20px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-.reports .report h3 a {
-    text-decoration: none;
-    color: #333;
-}
 
 footer {
     background-color: #333;
@@ -97,6 +93,7 @@ th {
 }
 
 .filter {
+    width: 12%;
     display: flex;
     align-items: center;
 }

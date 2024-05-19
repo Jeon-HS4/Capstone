@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template
-import requests
+from flask import Blueprint, render_template,request
+import requests 
 import pandas as pd
 import matplotlib.pyplot as plt
 import base64
@@ -51,6 +51,25 @@ def index():
 def page1():
     return render_template('page2.html')
 
+#데이터 입력
+@bp.route('/show_data',methods=['GET', 'POST'])
+def show_data():
+    # src/data 폴더의 CSV 파일 경로 설정
+    csv_file_path = os.path.join(os.path.dirname(__file__), 'static', 'data', 'dataAPI20240510seoul.csv')
+    #C:\Users\USER\Documents\GitHub\Capstone\app\module1\static\data\dataAPI20240510seoul.csv
+    # 데이터 프레임으로 읽기
+    df = pd.read_csv(csv_file_path)
+    df.set_index('dataTime')
+    if request.method == 'POST':
+        if 'transpose' in request.form:
+             df = df.transpose()
+        elif 'sort'  in request.form:
+            df=df[::-1]
+
+    # 데이터 프레임을 HTML 테이블로 변환
+    data_html = df.to_html()
+
+    return render_template('page0514Tahee.html', data_html=data_html)
 
 @bp.route('/main')
 def main_page():
