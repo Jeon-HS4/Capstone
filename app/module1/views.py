@@ -2,12 +2,11 @@ from flask import Blueprint, render_template, request
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
-import base64
 # import folium
 import numpy as np
-from io import BytesIO
 from dotenv import load_dotenv
 import os
+import mysql.connector
 
 
 bp = Blueprint('main', __name__, template_folder='templates')
@@ -17,27 +16,25 @@ load_dotenv()
 
 
 # 메인 페이지
+@bp.route('/')
 @bp.route('/page')
 def page1():
-    region_data = [
-        {"region" : "부산", "pmValue": "30", "regionId" : "051"},
-        {"region" : "충북", "pmValue": "110", "regionId" : "043"},
-        {"region" : "충남", "pmValue": "150", "regionId" : "041"},
-        {"region" : "대구", "pmValue": "120", "regionId" : "053"},
-        {"region" : "경북", "pmValue": "20", "regionId" : "054"},
-        {"region" : "경남", "pmValue": "110", "regionId" : "055"},
-        {"region" : "광주", "pmValue": "70", "regionId" : "062 "},
-        {"region" : "경기", "pmValue": "110", "regionId" : "031"},
-        {"region" : "인천", "pmValue": "90", "regionId" : "032"},
-        {"region" : "제주", "pmValue": "330", "regionId" : "064"},
-        {"region" : "전북", "pmValue": "110", "regionId" : "063"},
-        {"region" : "전남", "pmValue": "50", "regionId" : "061"},
-        {"region" : "세종", "pmValue": "114", "regionId" : "044"},
-        {"region" : "서울", "pmValue": "150", "regionId" : "02"},
-        {"region" : "울산", "pmValue": "100", "regionId" : "052"},
-        {"region" : "강원", "pmValue": "200", "regionId" : "033"},
-        {"region" : "대전", "pmValue": "10", "regionId" : "042"},
-    ]
+    # 데이터베이스 연결
+    connection = connect_to_database()
+    cursor = connection.cursor(dictionary=True)
+
+    try:
+        # 데이터베이스에서 데이터 가져오기
+        cursor.execute("SELECT * FROM region_data")
+        region_data = cursor.fetchall()
+    except Exception as e:
+        # 오류 처리
+        region_data = []
+        print("Error:", e)
+    finally:
+        # 커넥션 및 커서 종료
+        cursor.close()
+        connection.close()
     return render_template('main.html', region_data=region_data)
 
 
@@ -78,3 +75,13 @@ def predictions():
 @bp.route('/faq')
 def FAQ():
     return render_template('faq.html')
+
+
+def connect_to_database():
+    return mysql.connector.connect(
+        host='localhost',
+        user='username',
+        password='password',
+        database='capstone',
+        port=3306  # MySQL 포트
+    )
