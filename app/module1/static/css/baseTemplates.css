@@ -1,0 +1,73 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+#header {
+    background-color: #f1f1f1;
+    padding: 10px 20px;
+    color: #333;
+}
+
+#top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+#top h1 {
+    margin-bottom: 10px;
+}
+
+#top h1 a {
+    color: #000;
+    text-decoration: none;
+    font-size: 24px;
+}
+
+.menu_top {
+    width: 100%; 
+    display: flex;
+    justify-content: flex-end;
+}
+
+#gnb .wfix {
+    display: flex;
+    justify-content: space-around; /* 메뉴 아이템들을 균등하게 분배 */
+    width: 100%;
+}
+
+.lst_menu {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: space-between; /* 메뉴 아이템들 간의 간격을 균등하게 조정 */
+    width: 100%;
+}
+
+.lst_menu li {
+    padding: 10px;
+}
+
+.lst_menu a {
+    color: #666;
+    text-decoration: none;
+}
+
+.lst_menu a:hover {
+    color: #000;
+}
+
+.btn_allmenu {
+    display: none; /* 전체 메뉴 버튼은 필요에 따라 표시 */
+}
+
+footer {
+    background-color: #f1f1f1;
+    color: #333;
+    text-align: center;
+    padding: 10px 20px;
+}

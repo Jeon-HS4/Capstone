@@ -1,13 +1,12 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
-import base64
 # import folium
 import numpy as np
-from io import BytesIO
 from dotenv import load_dotenv
 import os
+import mysql.connector
 
 
 bp = Blueprint('main', __name__, template_folder='templates')
@@ -15,101 +14,74 @@ bp = Blueprint('main', __name__, template_folder='templates')
 load_dotenv()
 
 
+
+# 메인 페이지
 @bp.route('/')
-def index():
-    data_path = '/Users/jeon-hs4/Desktop/NewCapstone/apiData'
-    current_loc = 'seoul' # 현재 위치로 설정
-    #main_data = pd.read_csv(f'{data_path}/dataAPI20240510{current_loc}.csv', index_col=False)
-    region_data = [
-        {"region" : "부산", "pmValue": "120"},
-        {"region" : "충북", "pmValue": "110"},
-        {"region" : "충남", "pmValue": "150"},
-        {"region" : "대구", "pmValue": "120"},
-        {"region" : "경북", "pmValue": "100"},
-        {"region" : "경남", "pmValue": "110"},
-        {"region" : "광주", "pmValue": "130"},
-        {"region" : "경기", "pmValue": "110"},
-        {"region" : "인천", "pmValue": "90"},
-        {"region" : "제주", "pmValue": "120"},
-        {"region" : "전북", "pmValue": "110"},
-        {"region" : "전남", "pmValue": "120"},
-        {"region" : "세종", "pmValue": "114"},
-        {"region" : "서울", "pmValue": "150"},
-        {"region" : "울산", "pmValue": "100"},   
-    ]
-    
-    time_data = [
-        {'year': 2022, 'data': [2, 3, 4, 5, 3, 4, 5, 6, 5, 4, 3, 2], 'color': '#B2EBF4'},
-        {'year': 2023, 'data': [3, 4, 2, 5, 6, 7, 6, 5, 4, 3, 2, 1], 'color': '#FAED7D'},
-        {'year': 2024, 'data': [4, 5, 3, 4, 5], 'color': '#FFAD7D'}
-    ]
-    
-    return render_template('page0514Tahee.html', region_datas = region_data, time_datas = time_data)
-
-
-@bp.route('/1')
+@bp.route('/page')
 def page1():
-    return render_template('page2.html')
+    # 데이터베이스 연결
+    #connection = connect_to_database()
+    #cursor = connection.cursor(dictionary=True)
+
+    #try:
+        # 데이터베이스에서 데이터 가져오기
+        #cursor.execute("SELECT * FROM region_data")
+        #region_data = cursor.fetchall()
+   # except Exception as e:
+        # 오류 처리
+        #region_data = []
+        #print("Error:", e)
+    #finally:
+        # 커넥션 및 커서 종료
+        #cursor.close()
+        #connection.close()
+    return render_template('main.html', region_data=[])
 
 
-@bp.route('/main')
-def main_page():
-    return render_template('main_page.html')
+# 소개 페이지
+@bp.route('/introduce')
+def introduve():
+    return render_template('intro.html')
 
-@bp.route('/view_data')
-def view_data():
-    data = {
-        'Name': ['Alice', 'Bob', 'Charlie'],
-        'Age': [25, 30, 35],
-        'City': ['New York', 'Los Angeles', 'Chicago']
-    }
-    df = pd.DataFrame(data)
 
-    return render_template('view_data.html',  tables=[df.to_html(classes='data', header="true")])
+# 데이터 확인 페이지
+@bp.route('/view_data',methods=['GET', 'POST'])
+def show_data():
+    # src/data 폴더의 CSV 파일 경로 설정
+    csv_file_path = os.path.join(os.path.dirname(__file__), 'static', 'data', 'dataAPI20240510seoul.csv')
+    #C:\Users\USER\Documents\GitHub\Capstone\app\module1\static\data\dataAPI20240510seoul.csv
+    # 데이터 프레임으로 읽기
+    df = pd.read_csv(csv_file_path)
+    df.set_index('dataTime')
+    if request.method == 'POST':
+        if 'transpose' in request.form:
+             df = df.transpose()
+        elif 'sort'  in request.form:
+            df=df[::-1]
 
+    # 데이터 프레임을 HTML 테이블로 변환
+    data_html = df.to_html()
+
+    return render_template('dataView.html', data_html=data_html)
+
+
+# 미래 정보 예측 페이지
 @bp.route('/predicts')
 def predictions():
     return render_template('predicts.html')
 
-# @bp.route('/get_api')
-def get_data():
-    dec_key = os.environ.get('dec_key')
-    url = 'http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty'
-    params ={'serviceKey' : dec_key, 'returnType' : 'json', 'numOfRows' : '100', 'pageNo' : '1', 'stationName' : '종로구', 'dataTerm' : 'MONTH', 'ver' : '1.0' }
-    response = requests.get(url, params=params)
-    data = response.json()
-    json_items = data['response']['body']['items']
-    df = pd.json_normalize(json_items)
-    df1 = df[['dataTime', 'so2Value', 'coValue', 'o3Value', 'no2Value', 'pm10Value', 'pm25Value', 'khaiValue']]
-    df1.replace('-', np.nan, inplace=True)
-    return df1
 
-@bp.route('/visualize')
-def visualize_data():
-    df = get_data()
-    data = {
-        "labels": df['dataTime'].tolist(),
-        "datasets": [{
-            "label": column,
-            "data": df[column].tolist()
-        } for column in df.columns if column != 'dataTime']
-    }
-    return render_template('visualize.html', data=data)
+# FAQ 페이지
+@bp.route('/faq')
+def FAQ():
+    return render_template('faq.html')
 
-# @bp.route('/rcp')
-# def rcp():
-#     with open('example.asc', 'r') as file:
-#         asc_content = file.read()
-#     latitude = [37.7749, 34.0522] 
-#     longitude = [-122.4194, -118.2437]  
 
-#     # Folium 지도 생성
-#     map = folium.Map(location=[latitude[0], longitude[0]], zoom_start=10)
-
-#     # 데이터 포인트 추가
-#     for lat, lon in zip(latitude, longitude):
-#         folium.Marker([lat, lon]).add_to(map)
-
-#     map.save('templates/map.html')
-    
-#     return render_template('map.html')
+def connect_to_database():
+    return mysql.connector.connect(
+        host='localhost',
+        user='username',
+        password='password',
+        database='capstone',
+        port=3306  # MySQL 포트
+    )

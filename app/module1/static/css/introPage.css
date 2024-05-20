@@ -1,0 +1,29 @@
+.content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border-radius: 8px;
+}
+
+.overview-section {
+    width: 100%;
+    padding: 20px;
+}
+
+.overview-section h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.overview-section p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
