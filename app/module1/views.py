@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -19,23 +20,7 @@ load_dotenv()
 @bp.route('/')
 @bp.route('/page')
 def page1():
-    # 데이터베이스 연결
-    #connection = connect_to_database()
-    #cursor = connection.cursor(dictionary=True)
-
-    #try:
-        # 데이터베이스에서 데이터 가져오기
-        #cursor.execute("SELECT * FROM region_data")
-        #region_data = cursor.fetchall()
-   # except Exception as e:
-        # 오류 처리
-        #region_data = []
-        #print("Error:", e)
-    #finally:
-        # 커넥션 및 커서 종료
-        #cursor.close()
-        #connection.close()
-    return render_template('main.html', region_data=[])
+    return render_template('page2.html')
 
 
 # 소개 페이지
