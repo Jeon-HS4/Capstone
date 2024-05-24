@@ -1,15 +1,26 @@
-.container {
+/* 기존 스타일 유지 */
+
+.selector {
+    margin-bottom: 20px;
+    text-align: center;
+    width: 100%;
     display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background-size: cover;
-    background-position: center; /
+    justify-content: center;
+    
 }
 
-.tabInfo {
-    color: rgb(0, 0, 0);
-    padding: 20px;
-    text-align: center;
+.selector label {
+    font-size: 1.2em; /* 라벨 폰트 크기 조정 */
+    margin-right: 10px;
+}
+
+.selector select,
+.selector input[type="date"] {
+    padding: 8px;
+    font-size: 1.2em; /* 선택 박스 및 날짜 입력 박스 폰트 크기 조정 */
+    border: 1px solid #ccc;
+    margin-right: 20px;
+    border-radius: 4px;
 }
 
 .main-content {
@@ -26,23 +37,36 @@
     justify-content: center;
     align-items: flex-start;
     gap: 20px;
+    width: 100%;
 }
 
-.selector {
+.sidebar {
+    width: 200px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-right: 20px;
+}
+
+.sidebar h2 {
+    font-size: 1.5em;
     margin-bottom: 20px;
-    text-align: center;
 }
 
-.selector label {
-    font-size: 1.2em; /* 라벨 폰트 크기 조정 */
-    margin-right: 10px;
+#data-type-list {
+    list-style: none;
+    padding: 0;
 }
 
-.selector select {
-    padding: 8px;
-    font-size: 1.2em; /* 선택 박스 폰트 크기 조정 */
-    border: 1px solid #ccc;
-border-radius: 4px; 
+#data-type-list li {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+}
+
+#data-type-list li:hover {
+    background-color: #eee;
 }
 
 .chart {
@@ -54,6 +78,18 @@ border-radius: 4px;
     padding: 20px;
 }
 
+.download-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 10px; /* 간격을 조정합니다 */
+}
+.download-icon {
+    width: 24px;
+    height: 24px;
+}
+
 .info-panel {
     width: 300px;
     background: white;
@@ -61,3 +97,59 @@ border-radius: 4px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
 }
+
+
+#chart-title {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid #888;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+}
+
+.popup .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+
+        .popup {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 600px;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        .popup-content {
+            margin: 10px 0;
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+        .info-panel h2 {
+            cursor: pointer;
+        }

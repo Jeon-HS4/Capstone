@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>미래 예측 대시보드</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/baseTemplates.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/predictPage.css') }}">
-    <script src="{{ url_for('static', filename='js/predictPage.js') }}"></script>
-
 </head>
 <body>
     <header id="header">
@@ -24,7 +23,7 @@
                     <li class="m1"><a href="introduce" class="d1">환경정보서비스란?</a></li>
                     <li class="m2"><a href="view_data" class="d1">데이터 확인</a></li>
                     <li class="m4"><a href="predicts" class="d1">미래 정보 예측</a></li>
-                    <li class="m5"><a href="FAQ" class="d1">FAQ</a></li>
+                    <li class="m5"><a href="faq" class="d1">FAQ</a></li>
                 </ul>
                 <a href="javascript:;" class="btn_allmenu"><i class="ico_comm">전체메뉴 열기/닫기</i></a>
             </div>
@@ -32,41 +31,62 @@
     </header>
     <div class="container">
         <div class="tabInfo">
-            <h1 id="chart-title">미래 예측</h1>
+            <h1 id="chart-title">
+                미래 예측
+            </h1>
         </div>
         <div class="main-content">
             <div class="selector">
                 <label for="region-select">지역 선택:</label>
                 <select id="region-select" onchange="updateChart()">
-                    <option value="서울">서울</option>
-                    <option value="인천">인천</option>
-                    <option value="부산">부산</option>
+                    <option value="seoul">서울</option>
+                    <option value="incheon">인천</option>
+                    <option value="busan">부산</option>
                 </select>
+                <label for="date-input">날짜 선택:</label>
+                <input type="date" id="date-input" onchange="highlightDate()">
             </div>
             <div class="content">
+                <div class="sidebar">
+                    <h2>데이터목록</h2>
+                    <ul id="data-type-list">
+                        <li data-type="pm10Value">미세먼지</li>
+                        <li data-type="pm25Value">초미세먼지</li>
+                        <li data-type="o3Value">오존</li>
+                    </ul>
+                </div>
                 <div class="chart">
                     <div id="chart-plot"></div>
                 </div>
                 <div class="info-panel">
-                    <h2>데이터 요약</h2>
-                    <p id="summary"></p>
+                    <h2 onclick="showSummaryPopup()">데이터 요약</h2>
                     <h2>예측 방법론</h2>
                     <p>예측은 과거 데이터 포인트를 사용한 간단한 선형 회귀 모델을 기반으로 합니다.</p>
+                    <h2>알림설정</h2>
+                    <p><label for="threshold-input">미세먼지 알림설정</label>
+                        <input type="number" id="threshold-input" placeholder="예: 50">
+                        <button onclick="setNotification()">설정</button></p>
                     <h2>참고 자료</h2>
                     <p>
-                        데이터 출처: <a href="view_data">환경정보서비스</a>.<br>
+                        데이터 출처: <a href="view_data">환경정보서비스</a><br>
                     </p>
+                    <h2>차트 다운로드
+                        <button class="download-button" onclick="downloadChartAsImage()">
+                            <img src="{{ url_for('static', filename='img/downloads.png') }}" alt="다운로드" class="download-icon">
+                        </button>
+                    </h2>
                 </div>
             </div>
         </div>
     </div>
+    <div id="popup" class="popup">
+        <span class="close" onclick="closePopup()">&times;</span>
+        <div id="popup-content" class="popup-content"></div>
+    </div>
     <footer class="footer">
         <p>&copy; 한국공학대학교</p>
     </footer>
-    
-    <script>
-        // 초기 차트 그리기
-        updateChart();
-    </script>
+
+    <script src="{{ url_for('static', filename='js/predictPage.js') }}"></script>
 </body>
 </html>
