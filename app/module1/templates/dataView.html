@@ -6,6 +6,7 @@
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/baseTemplates.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/viewDataPage.css') }}">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
   <title>데이터 확인</title>
 </head>
 <body>
@@ -46,30 +47,17 @@
     </aside>
 
     <main>
-        <h2>주요 통계</h2>
+        <h2>{{ selected_file }} 데이터</h2>
+        
         <div class="statistics">
             <div class="details">
-              <p>3개월간 기상 관련 정보</p>
-              <p>에어코리아에서 제공하는 기상요소 정보입니다. </p>
+              <p><a href="https://www.airkorea.or.kr/index">에어코리아</a>에서 제공하는 {{ selected_file }} 데이터의 3개월간 기상 관련 정보</p>
+              <p> khaiValue:통합대기환경수치,so2Value:아황산가스,coValue:일산화탄소,pm10Value:미세먼지,noValue:이산화질소,o3Value:오존</p>
             </div>
-            <div class="controls">
-              정렬
-              <form method="get">
-                <button type="submit" id="sort-button">최신순부터</button>
-              </form>
-              <form method="post">
-                <button type="submit" id="sort-button" name="sort">등록순부터</button>
-              </form>
-            </div>
-            <div class="controls">
-                행렬 전환
-                <form method="get">
-                  <button type="submit" id="sort-button">세로 보기</button>
-                </form>
-                <form method="post">
-                  <button type="submit" id="sort-button" name="transpose">가로 보기</button>
-                </form>
-            </div>
+          <form method="POST" action="/download_current" >
+              <input type="hidden" name="csv_file" value="{{ selected_file }}">
+              <button type="submit" class="downloadButton">csv 파일 다운로드</button>
+          </form>
         </div>
 
       <div class="dataFrame">
@@ -78,23 +66,22 @@
 
     </main>
     <aside>
-      <label for="filter-input">지역 선택:</label>
-      <ul class="region-detail">
-        <li><a href="qq">서울</a> </li>
-        <li><a href="qq">경기도</a></li>
-        <li><a href="qq">인천</a></li>
-      </ul>
-      <label for="filter-input">필터:</label>
+      <form method="POST" action="/view_data">
+        <button type="submit" name="transpose">데이터 행렬 전환</button>
+        <button type="submit" name="sort">데이터 정렬</button>
+        <br>
+        <h3 for="csv_file">지역을 선택하세요.</h3>
+        <div>
+          {% for file in csv_files %}
+              <div>
+                  <input type="radio" id="{{ file }}" name="csv_file" value="{{ file }}" {% if file == selected_file %}checked{% endif %}>
+                  <label for="{{ file }}">{{ file }}</label>
+              </div>
+          {% endfor %}
+        </div>
+        <button type="submit" name="action" value="load">데이터 불러오기</button>
+      </form>
 
-      <ul class="parameter">
-        <li><input type="checkbox" name="columns" value="{{ column }}">통합환경지수</li>
-        <li><input type="checkbox" name="columns" value="{{ column }}">오존지수</li>
-        <li><input type="checkbox" name="columns" value="{{ column }}">미세먼지 pm10</li>
-      </ul>
-      <p> 검색 기능</p>
-      <input type="text" id="filter-input">
-      <p></p>
-      <button id="filter-button">입력</button>
     </aside>
 </div>
 
