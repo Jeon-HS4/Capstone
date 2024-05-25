@@ -60,13 +60,6 @@ function moveFooterSlide() {
     }
 }
 
-function updateExtraContent(content1, content2) {
-    document.getElementById('extra1').textContent = content1;
-    document.getElementById('extra2').textContent = content2;
-}
-
-
-
 
 
 
@@ -74,6 +67,18 @@ window.addEventListener('load', function() {
     // svg 이미지 작업 변수
     const svgObject = document.getElementById('svgMap');
     var svgDoc;
+    const goodConditionColor = '#D0ECFF';
+    const commonConditionColor = '#B8DCCA';
+    const badConditionColor = '#F8F7C6';
+    const veryBadConditionColor = '#FF6362';
+
+    const goodConditionColorMouseOn = '#73E7A4';
+    const commonConditionColorMouseOn = '#80CFFF';
+    const badConditionColorMouseOn = '#FEDF71';
+    const veryBadConditionColorMouseOn = '#C21715';
+
+    var someElement = document.getElementById('clock');
+    var button = document.querySelector('.subMap-container button');
 
     function setupSVG(svgDoc) {
       if (svgDoc) {
@@ -82,12 +87,28 @@ window.addEventListener('load', function() {
           console.log("Found paths:", paths.length); // 로그에 경로의 수를 출력하여 실제로 찾았는지 확인
   
           paths.forEach(path => {
-              path.addEventListener('mouseenter', function() {
-                  this.style.fill = '#ff0000'; // 마우스 오버 시 색상 변경
-              });
-              path.addEventListener('mouseleave', function() {
-                  this.style.fill = ''; // 원래 색상으로 복원
-              });
+                path.addEventListener('mouseenter', function() {
+                    if(this.style.fill == goodConditionColor){
+                        this.style.fill = goodConditionColorMouseOn; // 마우스 오버 시 색상 변경
+                    }else if(this.style.fill == commonConditionColor){
+                        this.style.fill = commonConditionColorMouseOn;
+                    }else if(this.style.fill == badConditionColor){
+                        this.style.fill = badConditionColorMouseOn;
+                    }else{
+                        this.style.fill = veryBadConditionColorMouseOn;
+                    }
+                });
+                path.addEventListener('mouseleave', function() {
+                    if(this.style.fill == goodConditionColorMouseOn){
+                        this.style.fill = goodConditionColor; // 마우스 오버 시 색상 변경
+                    }else if(this.style.fill == commonConditionColorMouseOn){
+                        this.style.fill = commonConditionColor;
+                    }else if(this.style.fill == badConditionColorMouseOn){
+                        this.style.fill = badConditionColor;
+                    }else{
+                        this.style.fill = veryBadConditionColor;
+                    }
+                });
           });
           region_datas.forEach(function(data) {
               var region = data.region;
@@ -98,13 +119,13 @@ window.addEventListener('load', function() {
               // PM 값에 따라 색상 지정
               var color = '';
               if (pmValue <= 30) {
-                  color = '#4173b6';
+                  color = goodConditionColor;
               } else if (pmValue <= 80) {
-                  color = '#4e8f4b';
+                  color = commonConditionColor;
               } else if (pmValue <= 150) {
-                  color = '#e7933d';
+                  color = badConditionColor;
               } else {
-                  color = '#b03730';
+                  color = veryBadConditionColor;
               }
   
               // 해당 지역의 title 속성 값을 사용하여 SVG 요소를 찾고, fill 속성을 변경
@@ -115,19 +136,50 @@ window.addEventListener('load', function() {
               console.log(regionId, color);
           });
   
-      } else {
+        } else {
           console.log("SVG Document is not accessible.");
-      }
-  }
-  if (svgObject.contentDocument) {
-    // 이미 로드된 경우
-    console.log("SVG is already loaded.");
-    setupSVG(svgObject.contentDocument);
-} else {
-    // 로드를 기다림
-    svgObject.addEventListener('load', function() {
+        }
+    }
+    if (svgObject.contentDocument) {
+        // 이미 로드된 경우
+        console.log("SVG is already loaded.");
         setupSVG(svgObject.contentDocument);
-    });
-}
+    } else {
+        // 로드를 기다림
+        svgObject.addEventListener('load', function() {
+            setupSVG(svgObject.contentDocument);
+        });
+    }
 
+    if (someElement) {
+        someElement.addEventListener('click', function() {
+            fnShowTab3Detail('032');
+        });
+    } else {
+        console.error("Cannot find element with ID 'some-element'");
+    }
+
+    button.addEventListener('click', function() {
+        fnShowTab3Detail('032');
+    });
 });
+
+
+
+// 클릭 이벤트 발생 시 실행되는 함수
+function showNewSVG() {
+    var newSVGContainer = document.getElementById('subMap_032');
+    if(newSVGContainer.style.display == 'none'){
+        newSVGContainer.style.display = 'block'; // 보이게 설정
+    }else{
+        newSVGContainer.style.display = 'none';
+    }
+}
+function fnShowTab3Detail(id) {
+    var newSVGContainer = document.getElementById('subMap_'+id);
+    if(newSVGContainer.style.display == 'none'){
+        newSVGContainer.style.display = 'block'; // 보이게 설정
+    }else{
+        newSVGContainer.style.display = 'none';
+    }
+}

@@ -3,12 +3,17 @@
     display: flex;
     flex-direction: column;
     height: calc(100% - 60px); /* Adjust based on header/footer height */
-    background-color: #ffffff; /* 배경색은 흰색 */
+    /* background-color: #ffffff; 배경색은 흰색 */
+    position: relative;
+    background-image: url('../img/img_main_bg.png');
+    background-size: cover; /* 배경 이미지를 요소에 맞게 확장하여 채움 */
+    background-repeat: no-repeat; /* 배경 이미지를 반복하지 않음 */
 }
 
 #top-content {
     display: flex;
     height: 75%;
+    position: relative;
 }
 
 .content {
@@ -36,7 +41,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #44c1f3; /* 지도 대신 회색 배경으로 표시 */
 }
 
 .clock {
@@ -50,16 +54,66 @@
     font-size: 0.9em;
 }
 
+.subMap-container {
+    display: flex;
+    flex-direction: column;
+    position: absolute; /* 새로운 DIV에 position: absolute; 추가 */
+    width: 40%;
+    height: 30%;
+    padding: 20px;
+    margin-top: 5%;
+}
+
+.cauHead {
+    margin-bottom: 10px; /* 버튼과 SVG 사이의 간격 조절 */
+    align-items: center;
+    display: flex;
+    justify-content: space-between; /* 요소들을 부모 요소의 양쪽 끝으로 정렬 */
+    align-items: center; /* 요소들을 세로로 중앙 정렬 */
+    background-color: #ccc;
+
+}
+
+.cauHead strong {
+    margin: 0 auto;
+}
+
+.subMap {
+    position: relative; /* 시간을 절대 위치로 배치하기 위해 relative 설정 */
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ccc;
+
+}
+
+
 
 /* 우측 상단 */
 .right_container {
-    flex: 2;
+    flex: 1;
     display: flex;
+    position: relative;
     flex-direction: column;
     padding: 10px;
-    background-color: #fff; /* 배경색은 흰색 */
+    /* background-color: #fff; 배경색은 흰색 */
 }
 
+.location {
+    position: absolute;
+    position: absolute;
+    left: 10px; /* 기존 맵과의 간격 조절 */
+    top: 10px; /* 기존 맵과의 간격 조절 */
+    width: 90%; /* 약간 작은 크기로 조절 */
+    height: 70%; /* 약간 작은 크기로 조절 */
+    display: none; /* 초기에는 숨김 상태 */
+    background-color: rgb(252, 252, 252);
+    color: rgb(0, 0, 0);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
 
 /* 우측 상단 - slide 정보 */
 #slideContainer {
@@ -72,8 +126,8 @@
 .slideContainer {
     flex: 1;
     margin: 10px 0;
-    padding: 10px;
-    background-color: #f8f8f8;
+    /* padding: 30px; */
+    /* background-color: #f8f8f8; */
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -84,11 +138,31 @@
     width: 400%; /* 전체 슬라이드의 너비는 4배 (100% * 4) */
     transition: transform 0.5s ease; /* 부드러운 전환 효과 */
     margin: 0; /* 추가 여백 제거 */
+    text-align: center;
+}
+
+.slide-info {
+    width: 25%; /* 슬라이드 하나의 너비는 25% */
+    flex-shrink: 0; /* 이미지 크기 자동 조절 방지 */
+}
+
+.slide-info h2 {
+    margin: 10px 0;
+    color: #333;
+}
+
+.slide-info p {
+    margin: 5px 0;
+    color: #666;
 }
 
 .slides img {
     width: 25%; /* 슬라이드 하나의 너비는 25% */
     flex-shrink: 0; /* 이미지 크기 자동 조절 방지 */
+    height: auto;
+    margin-top: 10px;
+    border-radius: 50%;
+    border: 1px solid #000;
 }
 
 .slide-btn {
@@ -120,21 +194,31 @@
 
 
 /* 우측 중단 - 세부 정보 표시 box */
-.box {
+.boxContainer {
     flex: 1;
     margin: 10px 0;
     padding: 10px;
-    background-color: #f8f8f8;
     display: flex;
     justify-content: space-around;
     align-items: center;
     border-radius: 15px;
     border: 4px solid blue;
+    flex-direction: column; /* 세로로 배치 */
+}
+
+.box {
+    flex: 1;
+    margin: 10px 0;
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 15px;
 }
 
 .sub-box {
     width: 49%; /* 부모 컨테이너의 50% 보다 약간 작게 */
-    background-color: #fff; /* 배경색은 흰색 */
+    /* background-color: #fff; 배경색은 흰색 */
     color: #000; /* 글자색은 검은색 */
     margin: 5px; /* 주변 여백 */
     padding: 10px; /* 내부 패딩 */
@@ -153,25 +237,25 @@
     justify-content: space-around;
     align-items: center;
     padding: 10px;
-    background-color: #e7e7e7;
+    /* background-color: #e7e7e7; */
     margin-top: 20px;
 }
 
 .extra-sub-box {
     width: 45%;
     padding: 20px;
-    background-color: #fff;
+    /* background-color: #fff; */
     border: 1px solid #ccc;
     text-align: center;
 }
 
 
-footer {
-    background-color: #f1f1f1;
+.downSilde {
     color: #333;
     text-align: center;
     padding: 10px 20px;
     margin-top: 30px;
+    border: 2px solid #48f;
 }
 
 .footer-slider {
@@ -193,24 +277,3 @@ footer {
     align-items: center; /* 슬라이드 내용 세로 중앙 정렬 */
     transition: transform 0.5s ease-in-out;
 }
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
