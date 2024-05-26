@@ -31,9 +31,7 @@
     </header>
     <div class="container">
         <div class="tabInfo">
-            <h1 id="chart-title">
-                미래 예측
-            </h1>
+            <h1 id="chart-title">미래 예측</h1>
         </div>
         <div class="main-content">
             <div class="selector">
@@ -50,26 +48,20 @@
                 <div class="sidebar">
                     <h2>데이터목록</h2>
                     <ul id="data-type-list">
-                        <li data-type="pm10Value">미세먼지</li>
-                        <li data-type="pm25Value">초미세먼지</li>
-                        <li data-type="o3Value">오존</li>
+                        <li data-type="PM10">미세먼지</li>
+                        <li data-type="PM2.5">초미세먼지</li>
+                        <li data-type="O3">오존</li>
                     </ul>
                 </div>
                 <div class="chart">
                     <div id="chart-plot"></div>
                 </div>
                 <div class="info-panel">
-                    <h2 onclick="showSummaryPopup()">데이터 요약</h2>
+                    <h2 id="data-summary-header">Chat GPT</h2>
                     <h2>예측 방법론</h2>
                     <p>예측은 과거 데이터 포인트를 사용한 간단한 선형 회귀 모델을 기반으로 합니다.</p>
-                    <h2>알림설정</h2>
-                    <p><label for="threshold-input">미세먼지 알림설정</label>
-                        <input type="number" id="threshold-input" placeholder="예: 50">
-                        <button onclick="setNotification()">설정</button></p>
                     <h2>참고 자료</h2>
-                    <p>
-                        데이터 출처: <a href="view_data">환경정보서비스</a><br>
-                    </p>
+                    <p>데이터 출처: <a href="view_data">환경정보서비스</a></p>
                     <h2>차트 다운로드
                         <button class="download-button" onclick="downloadChartAsImage()">
                             <img src="{{ url_for('static', filename='img/downloads.png') }}" alt="다운로드" class="download-icon">
@@ -82,6 +74,21 @@
     <div id="popup" class="popup">
         <span class="close" onclick="closePopup()">&times;</span>
         <div id="popup-content" class="popup-content"></div>
+    </div>
+    <div id="chatbot-popup" class="popup">
+        <span class="close" onclick="closeChatbotPopup()">&times;</span>
+        <div class="popup-content">
+            <div class="chat-title">ChatGPT</div>
+            <div class="chat-container">
+                <div id="chat-window" class="chat-window">
+                    <div id="chat-output" class="chat-output"></div>
+                </div>
+                <div class="chat-input-container">
+                    <input id="chat-input" class="chat-input" type="text" placeholder="메시지를 입력하세요...">
+                    <button id="send-button" class="send-button">전송</button>
+                </div>
+            </div>
+        </div>
     </div>
     <footer class="footer">
         <p>&copy; 한국공학대학교</p>

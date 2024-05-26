@@ -52,7 +52,6 @@ function moveFooterSlide() {
         // 마지막 슬라이드에서는 슬라이드 위치를 리셋합니다.
         resetSlidePosition();
     } else {
-        // 현재 슬라이드 인덱스를 증가시키고 슬라이드 이동
         currentFooterSlide++;
         footerSlides.forEach((slide, index) => {
             slide.style.transform = `translateY(-${(index - currentFooterSlide) * 100}%)`;
