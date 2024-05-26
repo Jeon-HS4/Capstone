@@ -25,9 +25,8 @@ function updateClock() {
     const day = String(now.getDate()).padStart(2, '0');
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
-    const dateString = `${year}년${month}월${day}일`;
-    const timeString = `${hours}시${minutes}분${seconds}초`;
+    const dateString = `${year}년 ${month}월 ${day}일  `;
+    const timeString = `${hours}시${minutes}분`;
     document.getElementById('clock').textContent = `${dateString} ${timeString}`;
 }
 
@@ -61,6 +60,10 @@ function moveFooterSlide() {
 }
 
 
+const rgbToHex = (rgb) => {
+    const result = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/.exec(rgb);
+    return result ? "#" + ((1 << 24) + (parseInt(result[1]) << 16) + (parseInt(result[2]) << 8) + parseInt(result[3])).toString(16).slice(1).toUpperCase() : rgb;
+};
 
 
 window.addEventListener('load', function() {
@@ -79,6 +82,9 @@ window.addEventListener('load', function() {
 
     var someElement = document.getElementById('clock');
     var button = document.querySelector('.subMap-container button');
+    const subSvgMap = document.getElementById('totalMap_033');
+
+    console.log(subSvgMap);
 
     function setupSVG(svgDoc) {
       if (svgDoc) {
@@ -88,6 +94,7 @@ window.addEventListener('load', function() {
   
           paths.forEach(path => {
                 path.addEventListener('mouseenter', function() {
+                    const currentColor = rgbToHex(this.style.fill.trim());
                     if(this.style.fill == goodConditionColor){
                         this.style.fill = goodConditionColorMouseOn; // 마우스 오버 시 색상 변경
                     }else if(this.style.fill == commonConditionColor){
@@ -99,6 +106,7 @@ window.addEventListener('load', function() {
                     }
                 });
                 path.addEventListener('mouseleave', function() {
+                    const currentColor = rgbToHex(this.style.fill.trim());
                     if(this.style.fill == goodConditionColorMouseOn){
                         this.style.fill = goodConditionColor; // 마우스 오버 시 색상 변경
                     }else if(this.style.fill == commonConditionColorMouseOn){
@@ -111,9 +119,8 @@ window.addEventListener('load', function() {
                 });
           });
           region_datas.forEach(function(data) {
-              var region = data.region;
-              var regionId = data.regionId;
-              var pmValue = parseInt(data.pmValue);
+              var regionId = data.regionCode1;
+              var pmValue = parseInt(data.pm10Value);
               console.log(data);
   
               // PM 값에 따라 색상 지정
@@ -153,15 +160,15 @@ window.addEventListener('load', function() {
 
     if (someElement) {
         someElement.addEventListener('click', function() {
-            fnShowTab3Detail('032');
+            fnShowTab3Detail('033');
         });
     } else {
         console.error("Cannot find element with ID 'some-element'");
     }
 
-    button.addEventListener('click', function() {
-        fnShowTab3Detail('032');
-    });
+    // subSvgMap.addEventListener('click', function() {
+    //     fnShowTab3Detail('033');
+    // });
 });
 
 
@@ -176,10 +183,200 @@ function showNewSVG() {
     }
 }
 function fnShowTab3Detail(id) {
-    var newSVGContainer = document.getElementById('subMap_'+id);
-    if(newSVGContainer.style.display == 'none'){
-        newSVGContainer.style.display = 'block'; // 보이게 설정
-    }else{
-        newSVGContainer.style.display = 'none';
+    var newSVGContainer = document.getElementById('subMap_' + id);
+    if (newSVGContainer) {
+        if (newSVGContainer.style.display === 'none') {
+            newSVGContainer.style.display = 'block'; // 보이게 설정
+        } else {
+            newSVGContainer.style.display = 'none';
+        }
+    } else {
+        console.error("Cannot find element with ID 'subMap_" + id + "'");
+    }
+}
+
+
+function getAddressFromCoordinates(lon, lat, api_key) {
+    var url = 'https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=' + lon + '&y=' + lat;
+    var headers = {"Authorization": "KakaoAK " + api_key};
+    
+    return fetch(url, { headers: headers })
+        .then(response => response.json())
+        .then(data => {
+            var match_first = data.documents[0].address_name;
+            return match_first;
+        })
+        .catch(error => {
+            console.error("Error fetching address:", error);
+            return null;
+        });
+}
+
+function setCurrentRegion(address_data) {
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            console.log(latitude, longitude);
+            // 위도와 경도를 사용하여 주소 가져오기
+            getAddressFromCoordinates(longitude, latitude, mapAPI)
+                .then(address => {
+                    // div에 주소 정보 표시
+                    var addressDiv = document.getElementById("address");
+                    addressDiv.textContent = address;
+
+                    var stationName = address.split(' ').pop();
+                    var data = address_data.find(item => item.stationName === stationName);
+                    console.log(stationName, data);
+                    if (data) {
+                        updateSlideInfo(data);
+                    } else {
+                        console.log("해당 지역의 데이터를 찾을 수 없습니다.");
+                    }
+
+                })
+                .catch(error => {
+                    console.error("Error getting address:", error);
+                });
+        });
+    } else {
+        console.log("이 브라우저에서는 위치 정보를 지원하지 않습니다.");
+    }
+}
+
+
+function updateSlideInfo(data) {
+    document.getElementById("khaiValue").innerText = getKhaiValueQualityText(data.khaiValue);
+    document.getElementById("pm10Value").innerText = getPM10QualityText(data.pm10Value);
+    document.getElementById("pm25Value").innerText = getPM25QualityText(data.pm25Value);
+    document.getElementById("o3Value").innerText = getO3QualityText(data.o3Value);
+    document.getElementById("no2Value").innerText = getNO2QualityText(data.no2Value);
+    document.getElementById("coValue").innerText = getCOQualityText(data.coValue);
+    document.getElementById("so2Value").innerText = getSO2QualityText(data.so2Value);
+}
+
+// 아황산가스 지수에 따른 텍스트 반환 함수
+function getSO2QualityText(value) {
+    var img = document.getElementById('so2Condition');
+    if (value <= 0.02) {
+        img.src = "static/img/condition_good.png";
+        return "좋음(" + value + ")";
+    } else if (value <= 0.05) {
+        img.src = "static/img/condition_common.png";
+        return "보통(" + value + ")";
+    } else if (value <= 0.15) {
+        img.src = "static/img/condition_bad.png";
+        return "나쁨(" + value + ")";
+    } else {
+        img.src = "static/img/condition_veryBad.png";
+        return "매우 나쁨(" + value + ")";
+    }
+}
+
+// 일산화탄소 지수에 따른 텍스트 반환 함수
+function getCOQualityText(value) {
+    var img = document.getElementById('coCondition');
+    if (value <= 2) {
+        img.src = "static/img/condition_good.png";
+        return "좋음(" + value + ")";
+    } else if (value <= 9) {
+        img.src = "static/img/condition_common.png";
+        return "보통(" + value + ")";
+    } else if (value <= 15) {
+        img.src = "static/img/condition_bad.png";
+        return "나쁨(" + value + ")";
+    } else {
+        img.src = "static/img/condition_veryBad.png";
+        return "매우 나쁨(" + value + ")";
+    }
+}
+
+// 오존 지수에 따른 텍스트 반환 함수
+function getO3QualityText(value) {
+    var img = document.getElementById('o3Condition');
+    if (value <= 0.03) {
+        img.src = "static/img/condition_good.png";
+        return "좋음(" + value + ")";
+    } else if (value <= 0.09) {
+        img.src = "static/img/condition_common.png";
+        return "보통(" + value + ")";
+    } else if (value <= 0.15) {
+        img.src = "static/img/condition_bad.png";
+        return "나쁨(" + value + ")";
+    } else {
+        img.src = "static/img/condition_veryBad.png";
+        return "매우 나쁨(" + value + ")";
+    }
+}
+
+// 이산화질소 지수에 따른 텍스트 반환 함수
+function getNO2QualityText(value) {
+    var img = document.getElementById('no2Condition');
+    if (value <= 0.03) {
+        img.src = "static/img/condition_good.png";
+        return "좋음(" + value + ")";
+    } else if (value <= 0.06) {
+        img.src = "static/img/condition_common.png";
+        return "보통(" + value + ")";
+    } else if (value <= 0.2) {
+        img.src = "static/img/condition_bad.png";
+        return "나쁨(" + value + ")";
+    } else {
+        img.src = "static/img/condition_veryBad.png";
+        return "매우 나쁨(" + value + ")";
+    }
+}
+
+// 미세먼지 PM-10 지수에 따른 텍스트 반환 함수
+function getPM10QualityText(value) {
+    var img = document.getElementById('pm10Condition');
+    if (value <= 30) {
+        img.src = "static/img/condition_good.png";
+        return "좋음(" + value + ")";
+    } else if (value <= 80) {
+        img.src = "static/img/condition_common.png";
+        return "보통(" + value + ")";
+    } else if (value <= 150) {
+        img.src = "static/img/condition_bad.png";
+        return "나쁨(" + value + ")";
+    } else {
+        img.src = "static/img/condition_veryBad.png";
+        return "매우 나쁨(" + value + ")";
+    }
+}
+
+// 초미세먼지 PM-2.5 지수에 따른 텍스트 반환 함수
+function getPM25QualityText(value) {
+    var img = document.getElementById('pm25Condition');
+    if (value <= 15) {
+        img.src = "static/img/condition_good.png";
+        return "좋음(" + value + ")";
+    } else if (value <= 35) {
+        img.src = "static/img/condition_common.png";
+        return "보통(" + value + ")";
+    } else if (value <= 75) {
+        img.src = "static/img/condition_bad.png";
+        return "나쁨(" + value + ")";
+    } else {
+        img.src = "static/img/condition_veryBad.png";
+        return "매우 나쁨(" + value + ")";
+    }
+}
+
+// 통합대기환경지수 khaiValue 지수에 따른 텍스트 반환 함수
+function getKhaiValueQualityText(value) {
+    var img = document.getElementById('khaiCondition');
+    if (value <= 50) {
+        img.src = "static/img/condition_good.png";
+        return "좋음(" + value + ")";
+    } else if (value <= 100) {
+        img.src = "static/img/condition_common.png";
+        return "보통(" + value + ")";
+    } else if (value <= 250) {
+        img.src = "static/img/condition_bad.png";
+        return "나쁨(" + value + ")";
+    } else {
+        img.src = "static/img/condition_veryBad.png";
+        return "매우 나쁨(" + value + ")";
     }
 }
