@@ -75,8 +75,8 @@ window.addEventListener('load', function() {
     const badConditionColor = '#F8F7C6';
     const veryBadConditionColor = '#FF6362';
 
-    const goodConditionColorMouseOn = '#73E7A4';
-    const commonConditionColorMouseOn = '#80CFFF';
+    const goodConditionColorMouseOn = '#80CFFF';
+    const commonConditionColorMouseOn = '#73E7A4';
     const badConditionColorMouseOn = '#FEDF71';
     const veryBadConditionColorMouseOn = '#C21715';
 
@@ -95,11 +95,11 @@ window.addEventListener('load', function() {
           paths.forEach(path => {
                 path.addEventListener('mouseenter', function() {
                     const currentColor = rgbToHex(this.style.fill.trim());
-                    if(this.style.fill == goodConditionColor){
+                    if(currentColor == goodConditionColor){
                         this.style.fill = goodConditionColorMouseOn; // 마우스 오버 시 색상 변경
-                    }else if(this.style.fill == commonConditionColor){
+                    }else if(currentColor == commonConditionColor){
                         this.style.fill = commonConditionColorMouseOn;
-                    }else if(this.style.fill == badConditionColor){
+                    }else if(currentColor == badConditionColor){
                         this.style.fill = badConditionColorMouseOn;
                     }else{
                         this.style.fill = veryBadConditionColorMouseOn;
@@ -107,11 +107,11 @@ window.addEventListener('load', function() {
                 });
                 path.addEventListener('mouseleave', function() {
                     const currentColor = rgbToHex(this.style.fill.trim());
-                    if(this.style.fill == goodConditionColorMouseOn){
+                    if(currentColor == goodConditionColorMouseOn){
                         this.style.fill = goodConditionColor; // 마우스 오버 시 색상 변경
-                    }else if(this.style.fill == commonConditionColorMouseOn){
+                    }else if(currentColor == commonConditionColorMouseOn){
                         this.style.fill = commonConditionColor;
-                    }else if(this.style.fill == badConditionColorMouseOn){
+                    }else if(currentColor == badConditionColorMouseOn){
                         this.style.fill = badConditionColor;
                     }else{
                         this.style.fill = veryBadConditionColor;

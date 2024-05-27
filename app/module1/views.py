@@ -1,11 +1,11 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, send_file
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
 # import folium
 import numpy as np
 from dotenv import load_dotenv
-import os
+import os, io
 import mysql.connector
 from datetime import datetime
 # from openai import OpenAI
@@ -14,32 +14,6 @@ from datetime import datetime
 bp = Blueprint('main', __name__, template_folder='templates')
 
 load_dotenv()
-
-
-    # text1 = '''
-    # 1. PM10 ³g/mµ\n
-    # - 이 정도는 중간 수준입니다. 이 정도 농도라면 대기질은 괜찮지만, 대기오염에 유난히 민감한 사람들에게는 우려가 있을 수 있습니다.
-
-    # 2. PM2.5 ³ g/m µ\n
-    # - 민감한 집단에게는 건강에 좋지 않을 수 있는 수준으로 간주됩니다. 호흡기 질환이나 심장 질환이 있는 사람, 어린이, 노인은 건강에 영향을 받을 수 있습니다. 일반 대중은 영향을 받지 않을 것입니다.
-
-    # 3. O3 (Ozone): 0.022 ppm\n
-    # - 이것은 상대적으로 낮은 수준의 오존입니다. 이 농도에서는 일반인의 건강에 영향을 미치지 않습니다. 
-
-    # 4. CO(일산화탄소) : 0.3ppm\n
-    # - 이것은 낮은 수준이며 일반적으로 정상적인 상황에서는 건강에 위험을 주지 않습니다.
-
-    # 5. SO2(이산화황) : 0.003ppm\n
-    # - 이것은 또한 낮은 수준이며 일반적으로 대부분의 사람들에게 관심사가 아닙니다.
-    # '''
-    # text2 = '''
-    # - 여기서 가장 우려되는 것은 민감한 집단에게 잠재적으로 건강에 좋지 않을 수 있을 만큼 충분히 높은 PM2.5의 수준입니다. 호흡기 질환이 있는 사람, 노인 및 어린이와 같은 민감한 개인에게는 장시간의 야외 활동을 제한하는 것이 바람직할 수 있습니다.
-    # - PM10, O3, CO, SO2의 수준은 일반적으로 허용 가능하며 일반 인구에게 건강에 악영향을 미치지 않을 것으로 예상됩니다.
-    # '''
-    # text3 = '''
-    # - 일반인의 경우 대기질은 보통 수준으로 야외 활동은 평소와 다름없이 지속될 수 있습니다.
-    # - 민감한 집단의 경우 공기질이 개선될 때까지 실내에 머물거나 공기청정기를 사용하고 격렬한 야외활동을 피하는 등의 주의를 기울이는 것이 좋습니다.
-    # '''
     
 # 메인 페이지
 @bp.route('/')
@@ -103,25 +77,36 @@ def introduve():
     return render_template('intro.html')
 
 
-# 데이터 확인 페이지
 @bp.route('/view_data',methods=['GET', 'POST'])
 def show_data():
-    # src/data 폴더의 CSV 파일 경로 설정
-    csv_file_path = os.path.join(os.path.dirname(__file__), 'static', 'data', 'dataAPI20240510seoul.csv')
+    data_folder = os.path.join(os.path.dirname(__file__), 'static', 'data')
+
+    csv_files = [f for f in os.listdir(data_folder) if f.endswith('.csv')]
+
+    selected_file = csv_files[0]  # 기본값: 첫 번째 CSV 파일
+
+    if request.method == 'POST':
+        selected_file = request.form.get('csv_file')
+        if selected_file not in csv_files:
+            return "Invalid file selected", 400  # 잘못된 파일이 선택된 경우 오류 반환
+
+    csv_file_path = os.path.join(data_folder, selected_file)
     #C:\Users\USER\Documents\GitHub\Capstone\app\module1\static\data\dataAPI20240510seoul.csv
     # 데이터 프레임으로 읽기
-    df = pd.read_csv(csv_file_path)
+    df = pd.read_csv(csv_file_path, index_col=0)
+
+    df = pd.read_csv(csv_file_path, index_col=0)
+
     df.set_index('dataTime')
     if request.method == 'POST':
         if 'transpose' in request.form:
              df = df.transpose()
         elif 'sort'  in request.form:
             df=df[::-1]
-
     # 데이터 프레임을 HTML 테이블로 변환
     data_html = df.to_html()
 
-    return render_template('dataView.html', data_html=data_html)
+    return render_template('dataView.html', data_html=data_html,csv_files=csv_files, selected_file=selected_file)
 
 
 # 미래 정보 예측 페이지
@@ -145,3 +130,26 @@ def connect_to_database():
         port=3306  # MySQL 포트
     )
     
+@bp.route('/download_current', methods=['POST'])
+def download_current():
+    data_folder = os.path.join(os.path.dirname(__file__), 'static', 'data')
+    selected_file="서울.csv"
+    data_folder = os.path.join(os.path.dirname(__file__), 'static', 'data')
+    selected_file = request.form.get('csv_file')
+
+    if selected_file:
+        csv_file_path = os.path.join(data_folder, selected_file)
+        df = pd.read_csv(csv_file_path, skiprows=1)
+
+        # 파일 변환 및 다운로드
+        output = io.StringIO()
+        df.to_csv(output, index=False)
+        output.seek(0)
+        return send_file(
+            io.BytesIO(output.getvalue().encode()),
+            mimetype='text/csv',
+            as_attachment=True,
+            download_name=selected_file
+        )
+
+    return "Invalid request", 400

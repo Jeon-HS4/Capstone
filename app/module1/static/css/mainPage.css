@@ -258,13 +258,16 @@
 .footer-slider {
     position: relative;
     width: 100%;
-    height: 150px; /* 필요에 따라 조절 가능 */
+    height: 200px; /* 필요에 따라 조절 가능 */
     overflow: hidden;
     display: flex;
     align-items: center; /* 세로 방향 중앙 정렬 */
     justify-content: center; /* 가로 방향 중앙 정렬 */
 }
     
+.slideBar{
+    padding: 20px;
+}
 .footer-slide {
     position: absolute;
     width: 50%; /* 슬라이드 폭을 footer-slider의 폭과 동일하게 설정 */

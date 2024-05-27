@@ -116,7 +116,7 @@
         <div class="footer-slide" style="background-color: #fff;">오존이 인체에 미치는 영향</div>
         <div class="footer-slide" style="background-color: #fff;">
             <a href='https://www.airkorea.or.kr/web/contents/contentView/?pMENU_NO=210&cntnts_no=30'>
-                대기오염경보 문자서비스 바로가기
+                <img class='slideBar' src="{{ url_for('static', filename='img/messageService.png') }}">
             </a>
         </div>
     </div>
@@ -133,7 +133,7 @@
     updateClock(); // 초기 시간 설정
     setInterval(updateClock, 60000); // 매 초마다 시간 업데이트
     setInterval(moveFooterSlide, 3000); // 3초마다 슬라이드 이동
-    setCurrentRegion(address_data)
+    //setCurrentRegion(address_data)
 </script>
 
 </body>
