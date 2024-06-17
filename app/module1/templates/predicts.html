@@ -35,14 +35,16 @@
         </div>
         <div class="main-content">
             <div class="selector">
-                <label for="region-select">지역 선택:</label>
-                <select id="region-select" onchange="updateChart()">
-                    <option value="seoul">서울</option>
-                    <option value="incheon">인천</option>
-                    <option value="busan">부산</option>
-                </select>
-                <label for="date-input">날짜 선택:</label>
-                <input type="date" id="date-input" onchange="highlightDate()">
+                <div class="region-selector">
+                    <label for="region-input">지역명 검색:</label>
+                    <input type="text" id="region-input" placeholder="도로명 또는 동을 입력하세요. 예) 서소문로">
+                    <button id="search-button">검색</button>
+                    <div id="suggestions" class="suggestions"></div>
+                </div>
+                <div class="date-selector">
+                    <label for="date-input">날짜 선택:</label>
+                    <input type="date" id="date-input" onchange="highlightDate()">
+                </div>
             </div>
             <div class="content">
                 <div class="sidebar">

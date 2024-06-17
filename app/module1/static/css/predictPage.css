@@ -1,13 +1,53 @@
-/* 기존 스타일 유지 */
-
-.selector {
-    margin-bottom: 20px;
-    text-align: center;
-    width: 100%;
-    display: flex;
-    justify-content: center;
+.suggestions {
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: white;
+    position: absolute;
+    width: 53%; /* 검색 필드와 동일한 너비 */
+    border: none;
+    z-index: 10;
+    margin-top: 5px; /* 검색 필드 바로 아래에 위치시키기 위한 여백 */
+    margin-left: 120px;
+    left: 0; /* 입력 창의 왼쪽에 맞추기 */
 }
 
+/* 기존 스타일 유지 */
+.suggestion-item {
+    padding: 8px;
+    cursor: pointer;
+}
+
+#search-button {
+    margin-left: 0; /* 검색 버튼과 입력 필드 사이의 여백 제거 */
+}
+
+.suggestion-item:hover {
+    background-color: #f0f0f0;
+}
+
+.region-selector,
+.date-selector {
+    margin-top: 10px;
+    position: relative;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.region-selector label,
+.date-selector label {
+    font-size: 1.2em;
+    margin-right: 10px;
+}
+
+.region-selector input,
+.date-selector input {
+    padding: 8px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 20px;
+}
 .selector label {
     font-size: 1.2em; /* 라벨 폰트 크기 조정 */
     margin-right: 10px;
