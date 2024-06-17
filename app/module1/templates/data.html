@@ -1,27 +1,154 @@
-{% extends "dataView.html" %}
+<!DOCTYPE html>
+<html lang="ko">
 
-{% block title %}CSV Data{% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/baseTemplates.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/viewDataPage.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>데이터 확인</title>
+</head>
 
-{% block content %}
-    <h1>CSV Data</h1>
-    <div class="table-container">
-        <table class="styled-table">
-            <thead>
-                <tr>
-                    {% for header in headers %}
-                        <th>{{ header }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in data %}
+<body>
+    <header id='header'>
+        <div id="top">
+            <h1>
+                <a href="page">
+                    환경정보서비스
+                </a>
+            </h1>
+            <div class="menu_top">
+                </form>
+            </div>
+        </div>
+
+        <nav id="gnb">
+            <div class="wfix">
+                <ul class="lst_menu">
+                    <li class="m1"><a href="introduce" class="d1">환경정보서비스란?</a></li>
+                    <li class="m2"><a href="view_data" class="d1">데이터 확인</a></li>
+                    <li class="m4"><a href="predicts" class="d1">미래 정보 예측</a></li>
+                    <li class="m5"><a href="faq" class="d1">FAQ</a></li>
+                </ul>
+                <a href="javascript:;" class="btn_allmenu"><i class="ico_comm">전체메뉴 열기/닫기</i></a>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main>
+            <h2>에어코리아 데이터</h2>
+            {% block content %}
+            <div class="statistics">
+                <div class="details">
+                    <p><a href="https://www.airkorea.or.kr/index">에어코리아</a>에서 제공하는 {{ selected_file }} 데이터의 3개월간 기상 관련
+                        정보</p>
+                    <p> khaiValue:통합대기환경수치,so2Value:아황산가스,coValue:일산화탄소,pm10Value:미세먼지,noValue:이산화질소,o3Value:오존</p>
+                </div>
+            </div>
+
+            <table>
+                <thead>
                     <tr>
-                        {% for cell in row.values() %}
-                            <td>{{ cell }}</td>
+                        {% for key in data[0].keys() %}
+                        <th>{{ key }}</th>
                         {% endfor %}
                     </tr>
+                </thead>
+                <tbody>
+                    {% for row in data %}
+                    <tr>
+                        {% for value in row.values() %}
+                        <td>{{ value }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endblock %}
+        </main>
+        <aside>
+            <form method="POST" action="/view_datasql">
+                <div>
+                    <label for="time_range_start">시작 시간:</label>
+                    <br>
+                    <input type="datetime-local" id="time_range_start" name="time_range_start">
+                </div>
+                <div>
+                    <label for="time_range_end">종료 시간:</label>
+                    <br>
+                    <input type="datetime-local" id="time_range_end" name="time_range_end">
+                </div>
+                <div>
+                    <label for="region">지역:</label>
+                    <br>
+                    <select id="region" name="region" multiple>
+                        <!-- 추후 데이터 추가시 예정 -->
+                        <option value="관악구">관악구</option>
+                        <option value="강남구">강남구</option>
+                        
+                    </select>
+                </div>
+                <div>
+                    <label>조회하고 싶은 열:</label>
+                    <br>
+                    <div>
+                        <input type="checkbox" id="column_value1" name="columns" value="so2Value">
+                        <label for="column_value1">so2Value</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="column_value2" name="columns" value="coValue">
+                        <label for="column_value2">coValue</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="column_value2" name="columns" value="o3Value">
+                        <label for="column_value2">o3Value</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="column_value2" name="columns" value="pm10Value">
+                        <label for="column_value2">pm10Value</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="column_value2" name="columns" value="pm25Value">
+                        <label for="column_value2">pm25Value</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="column_value2" name="columns" value="khaiValue">
+                        <label for="column_value2">khaiValue</label>
+                    </div>
+                </div>
+                <br>
+                <div>
+                    <label for="limit">보고 싶은 열:</label>
+                    <br>
+                    <input type="number" id="limit" name="limit" value="{{ selected_limit }}">
+                </div>
+                <br>
+                <button type="submit">조회</button><div>
+            </form>
+            <br>
+            <br>
+            <form method="POST" action="/download_data">
+                <input type="hidden" name="time_range_start" value="{{ request.form.time_range_start }}">
+                <input type="hidden" name="time_range_end" value="{{ request.form.time_range_end }}">
+                <input type="hidden" name="region" value="{{ request.form.region }}">
+                <input type="hidden" name="value1" value="{{ request.form.value1 }}">
+                <input type="hidden" name="value2" value="{{ request.form.value2 }}">
+                <input type="hidden" name="limit" value="{{ selected_limit }}">
+                {% for column in request.form.getlist('columns') %}
+                    <input type="hidden" name="columns" value="{{ column }}">
                 {% endfor %}
-            </tbody>
-        </table>
+                <div>
+                    <label for="file_format">Download Format:</label>
+                    <select id="file_format" name="file_format">
+                        <option value="csv">CSV</option>
+                        <option value="excel">Excel</option>
+                    </select>
+                </div>
+                <button type="submit">Download Data</button>
+            </form>
+        </aside>
     </div>
-{% endblock %}
+</body>
+
+</html>

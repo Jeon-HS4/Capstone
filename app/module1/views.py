@@ -95,9 +95,7 @@ def show_data():
     # 데이터 프레임으로 읽기
     df = pd.read_csv(csv_file_path, index_col=0)
 
-    df = pd.read_csv(csv_file_path, index_col=0)
-
-    df.set_index('dataTime')
+    #df.set_index('dataTime')
     if request.method == 'POST':
         if 'transpose' in request.form:
              df = df.transpose()
@@ -153,3 +151,107 @@ def download_current():
         )
 
     return "Invalid request", 400
+def get_db_connection():
+    connection = mysql.connector.connect(
+        host=os.getenv('DB_HOST', 'localhost'),
+        user=os.getenv('DB_USER', 'username'),
+        password=os.getenv('DB_PASSWORD', 'password'),
+        database=os.getenv('DB_NAME', 'capstone')
+    )
+    return connection
+@bp.route('/view_datasql', methods=['GET','POST'])
+def show_datass():
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    
+    filter_conditions = ["1=1"]
+    filter_values = []
+    selected_columns = ["*"]
+    limit = 100  # 기본 LIMIT 값 설정
+
+    if request.method == 'POST':
+        time_range_start = request.form.get('time_range_start')
+        time_range_end = request.form.get('time_range_end')
+        region = request.form.getlist('region')
+        limit = request.form.get('limit', type=int, default=100)
+        columns = request.form.getlist('columns')
+
+        if time_range_start and time_range_end:
+            filter_conditions.append("dataTime BETWEEN %s AND %s")
+            filter_values.extend([time_range_start, time_range_end])
+        if region:
+            filter_conditions.append("stationName IN (%s)" % ','.join(['%s'] * len(region)))
+            filter_values.extend(region)
+        if columns:
+            selected_columns = columns
+    
+    query = f"SELECT {', '.join(selected_columns)} FROM air_pollution_data WHERE {' AND '.join(filter_conditions)} LIMIT %s"
+    filter_values.append(limit)
+
+    cursor.execute(query, filter_values)
+    data = cursor.fetchall()
+    
+    cursor.close()
+    connection.close()
+ 
+    return render_template('data.html', data=data, selected_limit=limit)
+
+@bp.route('/download_dataSql', methods=['POST'])
+def download_data():
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    filter_conditions = ["1=1"]
+    filter_values = []
+    selected_columns = ["*"]
+    limit = 100
+
+    time_range_start = request.form.get('time_range_start')
+    time_range_end = request.form.get('time_range_end')
+    region = request.form.getlist('region')
+    value1 = request.form.get('value1')
+    value2 = request.form.get('value2')
+    limit = request.form.get('limit', type=int, default=100)
+    columns = request.form.getlist('columns')
+    file_format = request.form.get('file_format', 'csv')  # 파일 형식 선택
+
+    if time_range_start and time_range_end:
+        filter_conditions.append("time BETWEEN %s AND %s")
+        filter_values.extend([time_range_start, time_range_end])
+    if region:
+        filter_conditions.append("region IN (%s)" % ','.join(['%s'] * len(region)))
+        filter_values.extend(region)
+    if value1:
+        filter_conditions.append("value1 = %s")
+        filter_values.append(value1)
+    if value2:
+        filter_conditions.append("value2 = %s")
+        filter_values.append(value2)
+    if columns:
+        selected_columns = columns
+    
+    query = f"SELECT {', '.join(selected_columns)} FROM your_table WHERE {' AND '.join(filter_conditions)} LIMIT %s"
+    filter_values.append(limit)
+
+    cursor.execute(query, filter_values)
+    data = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    df = pd.DataFrame(data)
+
+    if file_format == 'excel':
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            df.to_excel(writer, index=False, sheet_name='Sheet1')
+        output.seek(0)
+        return send_file(output, mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                         attachment_filename='data.xlsx', as_attachment=True)
+    else:
+        output = io.StringIO()
+        df.to_csv(output, index=False)
+        output.seek(0)
+        return send_file(io.BytesIO(output.getvalue().encode()), mimetype='text/csv',
+                         attachment_filename='data.csv', as_attachment=True)
+    
