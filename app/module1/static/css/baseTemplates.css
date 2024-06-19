@@ -6,9 +6,23 @@ body {
 }
 
 #header {
-    background-color: #f1f1f1;
-    padding: 10px 20px;
+    display: flex;
+    background-color: #fff;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px;
     color: #333;
+    border-bottom: 1px solid #ccc;
+}
+
+.header-left {
+    flex: 2;
+}
+
+.header-right {
+    flex: 7;
+    display: flex;
+    justify-content: flex-end;
 }
 
 #top {
@@ -17,21 +31,10 @@ body {
     align-items: center;
 }
 
-
-#top h1 {
-    margin-bottom: 10px;
-}
-
 #top h1 a {
     color: #000;
     text-decoration: none;
     font-size: 24px;
-}
-
-.menu_top {
-    width: 100%; 
-    display: flex;
-    justify-content: flex-end;
 }
 
 #gnb .wfix {
@@ -42,14 +45,15 @@ body {
 
 .lst_menu {
     list-style: none;
-    padding: 0;
+    padding: 0 50px;
     display: flex;
     justify-content: space-between; /* 메뉴 아이템들 간의 간격을 균등하게 조정 */
     width: 100%;
+    float: left;
 }
 
 .lst_menu li {
-    padding: 10px;
+    padding: 0px 10px;
 }
 
 .lst_menu a {

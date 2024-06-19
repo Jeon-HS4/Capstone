@@ -9,78 +9,133 @@
 </head>
 <body>
     <header id='header'>
-        <div id="top">
-            <h1>
-                <a href="page">
-                    환경정보서비스
-                </a>
-            </h1>
-            <div class="menu_top">
-                </form>
+        <div class='header-left'>
+            <div id="top">
+                <h1>
+                    <a href="page">
+                        환경정보서비스
+                    </a>
+                </h1>
             </div>
         </div>
-
-        <nav id="gnb">
-            <div class="wfix">
-                <ul class="lst_menu">
-                    <li class="m1"><a href="introduce" class="d1">환경정보서비스란?</a></li>
-                    <li class="m2"><a href="view_data" class="d1">데이터 확인</a></li>
-                    <li class="m4"><a href="predicts" class="d1">미래 정보 예측</a></li>
-                    <li class="m5"><a href="faq" class="d1">FAQ</a></li>
-                </ul>
-                <a href="javascript:;" class="btn_allmenu"><i class="ico_comm">전체메뉴 열기/닫기</i></a>
-            </div>
-        </nav>
+        <div class='header-right'>
+            <nav id="gnb">
+                <div class="wfix">
+                    <ul class="lst_menu">
+                        <li class="m1"><a href="introduce" class="d1">환경정보서비스란?</a></li>
+                        <li class="m2"><a href="view_data" class="d1">데이터 확인</a></li>
+                        <li class="m4"><a href="predicts" class="d1">미래 정보 예측</a></li>
+                        <li class="m5"><a href="faq" class="d1">FAQ</a></li>
+                    </ul>
+                    <a href="javascript:;" class="btn_allmenu"><i class="ico_comm">전체메뉴 열기/닫기</i></a>
+                </div>
+            </nav>
+        </div>
     </header>
     <div id="main-content">
-      <div id="top-content">
-  <div class="map">
-    <div class="clock" id="clock">00:00:00</div>
-    <object id="svgMap" type="image/svg+xml" data="{{ url_for('static', filename='img/map_svg.svg') }}" 
-            width="100%" height="80%">Your browser does not support SVG</object>
-  </div>
-  <div class="right_container">
-    <div class="slideContainer" id="slideContainer">
-      <button class="slide-btn prev" onclick="moveSlides(-1)">&#10094;</button>
-      <div class="slides">
-          <img src="{{ url_for('static', filename='img/condition_good.png') }}" alt="image1" alt="Slide 1">
-          <img src="{{ url_for('static', filename='img/condition_good.png') }}" alt="image3" alt="Slide 2">
-          <img src="{{ url_for('static', filename='img/condition_common.png') }}" alt="image1" alt="Slide 3">
-          <img src="{{ url_for('static', filename='img/condition_good.png') }}" alt="image4" alt="Slide 4">
-          <img src="{{ url_for('static', filename='img/condition_good.png') }}" alt="image5" alt="Slide 5">
-          <img src="{{ url_for('static', filename='img/condition_good.png') }}" alt="image6" alt="Slide 6">
-      </div>
-      <button class="slide-btn next" onclick="moveSlides(1)">&#10095;</button>
+        <div id="top-content">
+            <div class="map">
+                <div class="clock" id="clock">00:00:00</div>
+                <object id="svgMap" type="image/svg+xml" data="{{ url_for('static', filename='img/map_svg.svg') }}" 
+                    width="100%" height="80%">Your browser does not support SVG</object>
+
+                  
+            </div>
+            <div class='subMap-container' id='subMap_032' style="display: none;">
+                <div class="cauHead">
+                    <strong>강원특별자치도</strong>
+                    <button><span class="hide" style='float:right;'>X</span></button>
+                </div>
+                <div class="subMap">
+                    <object id="subSvgMap" type="image/svg+xml" data="{{ url_for('static', filename='img/map_033.svg') }}" 
+                        width="100%" height="80%">Your browser does not support SVG</object>
+                </div>
+            </div>
+            <div class="right_container">
+                <div class="location" id='address'>서울시 종로구</div>
+                <div class="slideContainer" id="slideContainer">
+                    <button class="slide-btn prev" onclick="moveSlides(-1)">&#10094;</button>
+                    <div class="slides">
+                        <div class="slide-info">
+                            <img id='khaiCondition' src="{{ url_for('static', filename='img/condition_good.png') }}" alt="image1" alt="Slide 1">
+                            <h3>통합대기환경<br>지수</h3>
+                            <p id='khaiValue'>좋음(30)</p>
+                        </div>
+                        <div class="slide-info">
+                            <img id='pm10Condition' src="{{ url_for('static', filename='img/condition_good.png') }}" alt="image3" alt="Slide 2">
+                            <h3>미세먼지<br>(PM-10)</h3>
+                            <p id='pm10Value'>좋음(30)</p>
+                        </div>
+                        <div class="slide-info" >
+                            <img id='pm25Condition' src="{{ url_for('static', filename='img/condition_common.png') }}" alt="image1" alt="Slide 3">
+                            <h3>초미세먼지<br>(PM-2.5)</h3>
+                            <p id='pm25Value'>좋음(30)</p>
+                        </div>
+                        <div class="slide-info">
+                            <img id='o3Condition' src="{{ url_for('static', filename='img/condition_good.png') }}" alt="image4" alt="Slide 4">
+                            <h3>오존<br>(O3)</h3>
+                            <p id='o3Value'>좋음(30)</p>
+                        </div>
+                        <div class="slide-info">
+                            <img id='no2Condition' src="{{ url_for('static', filename='img/condition_good.png') }}" alt="image5" alt="Slide 5">
+                            <h3>이산화질소<br>(NO2)</h3>
+                            <p id='no2Value'>좋음(30)</p>
+                        </div>
+                        <div class="slide-info">
+                            <img id='coCondition' src="{{ url_for('static', filename='img/condition_good.png') }}" alt="image6" alt="Slide 6">
+                            <h3>일산화탄소<br>(CO)</h3>
+                            <p id='coValue'>좋음(30)</p>
+                        </div>
+                        <div class="slide-info">
+                            <img id='so2Condition' src="{{ url_for('static', filename='img/condition_good.png') }}" alt="image6" alt="Slide 7">
+                            <h3>아황산가스<br>(SO2)</h3>
+                            <p id='so2Value'>좋음(30)</p>
+                        </div>
+                    </div>
+            <button class="slide-btn next" onclick="moveSlides(1)">&#10095;</button>
+            </div>
+            <div class='boxContainer'>
+                <p> GPT 평가 의견 </p>
+                <div class="box">
+                    <h3>전반적인 공기질 평가</h3>
+                    <p>주요 관심사는 PM2.5 수준으로, 이는 민감한 그룹에게 잠재적으로 건강에 해로울 수 있는 수준입니다.</p>
+                    <p>호흡기 질환자, 노인 및 어린이와 같은 민감한 개인은 장시간 야외 활동을 제한하는 것이 좋습니다.</p>
+                    <p>PM10, O3, CO 및 SO2의 수준은 일반적으로 수용 가능한 수준으로, 일반 대중에게 악영향을 미칠 것으로 예상되지 않습니다.</p>
+                </div>
+                <hr>
+                <div class="box">
+                    <h3>날씨 권고</h3>
+                    <p>일반 대중의 경우, 대기 질은 보통 수준이므로 야외 활동은 정상적으로 이어질 수 있습니다.</p>
+                    <p>민감한 그룹의 경우, 대기 질이 개선될 때까지 실내에 머물고, 공기 정화기를 사용하며 격렬한 야외 활동을 피하는 등의 예방 조치를 취하는 것이 좋습니다.<p>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="box" id="box2">
-      <div class="sub-box" onclick="updateExtraContent('지역별 1 정보', '연도별 정보 1')">Sub Box 1</div>
-      <div class="sub-box" onclick="updateExtraContent('지역별 2 정보', '연도별 정보 2')">Sub Box 2</div>
-  </div>
-  <div class="box" id="box3">
-      <div class="sub-box" onclick="updateExtraContent('지역별 3 정보', '연도별 정보 3')">Sub Box 3</div>
-      <div class="sub-box" onclick="updateExtraContent('지역별 4 정보', '연도별 정보 4')">Sub Box 4</div>
-  </div>
 </div>
+<div class='downSlide'>
+    <div class="footer-slider">
+        <div class="footer-slide" style="background-color: #fff;">미세먼지 자세히 알기</div>
+        <div class="footer-slide" style="background-color: #fff;">오존이 인체에 미치는 영향</div>
+        <div class="footer-slide" style="background-color: #fff;">
+            <a href='https://www.airkorea.or.kr/web/contents/contentView/?pMENU_NO=210&cntnts_no=30'>
+                <img class='slideBar' src="{{ url_for('static', filename='img/messageService.png') }}">
+            </a>
+        </div>
+    </div>
 </div>
-<div class="extra-box">
-  <div class="extra-sub-box" id="extra1">Extra Box 1 Content</div>
-  <div class="extra-sub-box" id="extra2">Extra Box 2 Content</div>
-</div>
-</div>
+
 <footer>
-  <div class="footer-slider">
-    <div class="footer-slide" style="background-color: #a29bfe;">Slide 1 Content</div>
-    <div class="footer-slide" style="background-color: #00b894;">Slide 2 Content</div>
-    <div class="footer-slide" style="background-color: #fdcb6e;">Slide 3 Content</div>
-    <div class="footer-slide" style="background-color: #a29bfe;">Slide 1 Content</div>
-  </div>
+    <p>&copy; 2024 환경정보서비스</p>
 </footer>
 </div>
 <script>
     const region_datas = {{ region_data | tojson }};
+    const address_data = {{ address_data | tojson }};
+    const mapAPI = '60f82c7a75238a8ff6bcd24d311bcaa2'
     updateClock(); // 초기 시간 설정
-    setInterval(updateClock, 1000); // 매 초마다 시간 업데이트
+    setInterval(updateClock, 60000); // 매 초마다 시간 업데이트
     setInterval(moveFooterSlide, 3000); // 3초마다 슬라이드 이동
+    setCurrentRegion(address_data)
 </script>
 
 </body>
