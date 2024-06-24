@@ -105,3 +105,9 @@ th {
 .filter input {
     margin-right: 10px;
 }
+
+.downloadButton{
+    padding: 10px;
+    height: 60%;
+    width: auto;
+}
