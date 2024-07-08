@@ -107,9 +107,7 @@ def show_data():
     # 데이터 프레임으로 읽기
     df = pd.read_csv(csv_file_path, index_col=0)
 
-    df = pd.read_csv(csv_file_path, index_col=0)
-
-    df.set_index('dataTime')
+    #df.set_index('dataTime')
     if request.method == 'POST':
         if 'transpose' in request.form:
              df = df.transpose()
@@ -155,7 +153,14 @@ def download_current():
         )
 
     return "Invalid request", 400
-
+def get_db_connection():
+    connection = mysql.connector.connect(
+        host=os.getenv('DB_HOST', 'localhost'),
+        user=os.getenv('DB_USER', 'username'),
+        password=os.getenv('DB_PASSWORD', 'password'),
+        database=os.getenv('DB_NAME', 'capstone')
+    )
+    return connection
 @bp.route('/view_datasql', methods=['GET','POST'])
 def show_datass():
     connection = get_db_connection()
@@ -250,4 +255,9 @@ def download_data():
         df.to_csv(output, index=False)
         output.seek(0)
         return send_file(io.BytesIO(output.getvalue().encode()), mimetype='text/csv',
+<<<<<<< HEAD
                          attachment_filename='data.csv', as_attachment=True)
+=======
+                         attachment_filename='data.csv', as_attachment=True)
+    
+>>>>>>> main
