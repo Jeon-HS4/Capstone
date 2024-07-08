@@ -14,10 +14,10 @@ app.use(cors());
 app.use(helmet());
 
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root', // 생성한 사용자로 변경
-  password: 'yky21c2094!', // 새로운 비밀번호로 변경
-  database: 'capstone_db'
+  host: '127.0.0.1',
+  user: 'username', // 생성한 사용자로 변경
+  password: 'password', // 새로운 비밀번호로 변경
+  database: 'capstone'
 });
 
 connection.connect((err) => {

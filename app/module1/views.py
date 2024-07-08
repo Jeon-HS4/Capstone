@@ -7,48 +7,32 @@ import base64
 import numpy as np
 from io import BytesIO
 from dotenv import load_dotenv
-<<<<<<< HEAD
-import os
-=======
 import os, io
 import mysql.connector
 from datetime import datetime
 # from openai import OpenAI
->>>>>>> cb788fd3fbdc38289e4d24fc4fca3e49b45c6fe5
 
 
 bp = Blueprint('main', __name__, template_folder='templates')
 
 load_dotenv()
     
+# DB 연결 생성
+def get_db_connection():
+    connection = mysql.connector.connect(
+        host=os.getenv('DB_HOST', 'localhost'),
+        user=os.getenv('DB_USER', 'username'),
+        password=os.getenv('DB_PASSWORD', 'password'),
+        database=os.getenv('DB_NAME', 'capstone')
+    )
+    return connection
+
+
 # 메인 페이지
 @bp.route('/page')
-<<<<<<< HEAD
-def page1():
-    region_data = [
-        {"region" : "부산", "pmValue": "30", "regionId" : "051"},
-        {"region" : "충북", "pmValue": "110", "regionId" : "043"},
-        {"region" : "충남", "pmValue": "150", "regionId" : "041"},
-        {"region" : "대구", "pmValue": "120", "regionId" : "053"},
-        {"region" : "경북", "pmValue": "20", "regionId" : "054"},
-        {"region" : "경남", "pmValue": "110", "regionId" : "055"},
-        {"region" : "광주", "pmValue": "70", "regionId" : "062 "},
-        {"region" : "경기", "pmValue": "110", "regionId" : "031"},
-        {"region" : "인천", "pmValue": "90", "regionId" : "032"},
-        {"region" : "제주", "pmValue": "330", "regionId" : "064"},
-        {"region" : "전북", "pmValue": "110", "regionId" : "063"},
-        {"region" : "전남", "pmValue": "50", "regionId" : "061"},
-        {"region" : "세종", "pmValue": "114", "regionId" : "044"},
-        {"region" : "서울", "pmValue": "150", "regionId" : "02"},
-        {"region" : "울산", "pmValue": "100", "regionId" : "052"},
-        {"region" : "강원", "pmValue": "200", "regionId" : "033"},
-        {"region" : "대전", "pmValue": "10", "regionId" : "042"},
-    ]
-    return render_template('main.html', region_data=region_data)
-=======
 def index():
     # 데이터베이스 연결
-    connection = connect_to_database()
+    connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
     
     query = '''SELECT regionCode1, ROUND(AVG(pm10Value)) AS pm10Value
@@ -97,7 +81,6 @@ def index():
         cursor.close()
         connection.close()
     return render_template('main.html', region_data=current_data,address_data=address_data)
->>>>>>> cb788fd3fbdc38289e4d24fc4fca3e49b45c6fe5
 
 
 # 소개 페이지
@@ -147,21 +130,8 @@ def predictions():
 # FAQ 페이지
 @bp.route('/faq')
 def FAQ():
-<<<<<<< HEAD
-    return render_template('faq.html')
-=======
     return render_template('faq.html')
 
-
-def connect_to_database():
-    return mysql.connector.connect(
-        host='localhost',
-        user='username',
-        password='password',
-        database='capstone',
-        port=3306  # MySQL 포트
-    )
-    
 @bp.route('/download_current', methods=['POST'])
 def download_current():
     data_folder = os.path.join(os.path.dirname(__file__), 'static', 'data')
@@ -185,4 +155,99 @@ def download_current():
         )
 
     return "Invalid request", 400
->>>>>>> cb788fd3fbdc38289e4d24fc4fca3e49b45c6fe5
+
+@bp.route('/view_datasql', methods=['GET','POST'])
+def show_datass():
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    
+    filter_conditions = ["1=1"]
+    filter_values = []
+    selected_columns = ["*"]
+    limit = 100  # 기본 LIMIT 값 설정
+
+    if request.method == 'POST':
+        time_range_start = request.form.get('time_range_start')
+        time_range_end = request.form.get('time_range_end')
+        region = request.form.getlist('region')
+        limit = request.form.get('limit', type=int, default=100)
+        columns = request.form.getlist('columns')
+
+        if time_range_start and time_range_end:
+            filter_conditions.append("dataTime BETWEEN %s AND %s")
+            filter_values.extend([time_range_start, time_range_end])
+        if region:
+            filter_conditions.append("stationName IN (%s)" % ','.join(['%s'] * len(region)))
+            filter_values.extend(region)
+        if columns:
+            selected_columns = columns
+    
+    query = f"SELECT {', '.join(selected_columns)} FROM air_pollution_data WHERE {' AND '.join(filter_conditions)} LIMIT %s"
+    filter_values.append(limit)
+
+    cursor.execute(query, filter_values)
+    data = cursor.fetchall()
+    
+    cursor.close()
+    connection.close()
+ 
+    return render_template('data.html', data=data, selected_limit=limit)
+
+@bp.route('/download_dataSql', methods=['POST'])
+def download_data():
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    filter_conditions = ["1=1"]
+    filter_values = []
+    selected_columns = ["*"]
+    limit = 100
+
+    time_range_start = request.form.get('time_range_start')
+    time_range_end = request.form.get('time_range_end')
+    region = request.form.getlist('region')
+    value1 = request.form.get('value1')
+    value2 = request.form.get('value2')
+    limit = request.form.get('limit', type=int, default=100)
+    columns = request.form.getlist('columns')
+    file_format = request.form.get('file_format', 'csv')  # 파일 형식 선택
+
+    if time_range_start and time_range_end:
+        filter_conditions.append("time BETWEEN %s AND %s")
+        filter_values.extend([time_range_start, time_range_end])
+    if region:
+        filter_conditions.append("region IN (%s)" % ','.join(['%s'] * len(region)))
+        filter_values.extend(region)
+    if value1:
+        filter_conditions.append("value1 = %s")
+        filter_values.append(value1)
+    if value2:
+        filter_conditions.append("value2 = %s")
+        filter_values.append(value2)
+    if columns:
+        selected_columns = columns
+    
+    query = f"SELECT {', '.join(selected_columns)} FROM your_table WHERE {' AND '.join(filter_conditions)} LIMIT %s"
+    filter_values.append(limit)
+
+    cursor.execute(query, filter_values)
+    data = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    df = pd.DataFrame(data)
+
+    if file_format == 'excel':
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            df.to_excel(writer, index=False, sheet_name='Sheet1')
+        output.seek(0)
+        return send_file(output, mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                         attachment_filename='data.xlsx', as_attachment=True)
+    else:
+        output = io.StringIO()
+        df.to_csv(output, index=False)
+        output.seek(0)
+        return send_file(io.BytesIO(output.getvalue().encode()), mimetype='text/csv',
+                         attachment_filename='data.csv', as_attachment=True)
