@@ -1,15 +1,65 @@
-.container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background-size: cover;
-    background-position: center; /
+.suggestions {
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: white;
+    position: absolute;
+    width: 53%; /* 검색 필드와 동일한 너비 */
+    border: none;
+    z-index: 10;
+    margin-top: 5px; /* 검색 필드 바로 아래에 위치시키기 위한 여백 */
+    margin-left: 120px;
+    left: 0; /* 입력 창의 왼쪽에 맞추기 */
 }
 
-.tabInfo {
-    color: rgb(0, 0, 0);
-    padding: 20px;
+/* 기존 스타일 유지 */
+.suggestion-item {
+    padding: 8px;
+    cursor: pointer;
+}
+
+#search-button {
+    margin-left: 0; /* 검색 버튼과 입력 필드 사이의 여백 제거 */
+}
+
+.suggestion-item:hover {
+    background-color: #f0f0f0;
+}
+
+.region-selector,
+.date-selector {
+    margin-top: 10px;
+    position: relative;
+    margin-bottom: 10px;
     text-align: center;
+}
+
+.region-selector label,
+.date-selector label {
+    font-size: 1.2em;
+    margin-right: 10px;
+}
+
+.region-selector input,
+.date-selector input {
+    padding: 8px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 20px;
+}
+.selector label {
+    font-size: 1.2em; /* 라벨 폰트 크기 조정 */
+    margin-right: 10px;
+}
+
+.selector select,
+.selector input[type="date"] {
+    padding: 8px;
+    font-size: 1.2em; /* 선택 박스 및 날짜 입력 박스 폰트 크기 조정 */
+    border: 1px solid #ccc;
+    margin-right: 20px;
+    border-radius: 4px;
 }
 
 .main-content {
@@ -26,23 +76,36 @@
     justify-content: center;
     align-items: flex-start;
     gap: 20px;
+    width: 100%;
 }
 
-.selector {
+.sidebar {
+    width: 200px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-right: 20px;
+}
+
+.sidebar h2 {
+    font-size: 1.5em;
     margin-bottom: 20px;
-    text-align: center;
 }
 
-.selector label {
-    font-size: 1.2em; /* 라벨 폰트 크기 조정 */
-    margin-right: 10px;
+#data-type-list {
+    list-style: none;
+    padding: 0;
 }
 
-.selector select {
-    padding: 8px;
-    font-size: 1.2em; /* 선택 박스 폰트 크기 조정 */
-    border: 1px solid #ccc;
-border-radius: 4px; 
+#data-type-list li {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+}
+
+#data-type-list li:hover {
+    background-color: #eee;
 }
 
 .chart {
@@ -54,10 +117,153 @@ border-radius: 4px;
     padding: 20px;
 }
 
+.download-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 10px; /* 간격을 조정합니다 */
+}
+.download-icon {
+    width: 24px;
+    height: 24px;
+}
+
 .info-panel {
     width: 300px;
     background: white;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
+}
+
+#chart-title {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid #888;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+}
+
+.popup .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+
+/* 추가된 스타일 */
+
+#chatbot-popup {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 800px;
+    height: 80%;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#chatbot-popup .popup-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px;
+}
+
+#chatbot-popup .chat-title {
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#chatbot-popup .chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#chatbot-popup .chat-window {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.chat-input-container {
+    display: flex;
+    align-items: center;
+}
+
+#chat-input {
+    flex: 9;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+#send-button {
+    flex: 1;
+    border: none;
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+#send-button:hover {
+    background-color: #45a049;
+}
+
+#chatbot-popup .message {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 80%;
+    word-wrap: break-word;
+    display: inline-block;
+    clear: both;
+}
+
+#chatbot-popup .message.user {
+    align-self: flex-end;
+    background-color: #dcf8c6;
+    text-align: right;
+    float: right;
+}
+
+#chatbot-popup .message.bot {
+    align-self: flex-start;
+    background-color: #f1f0f0;
+    text-align: left;
+    float: left;
 }

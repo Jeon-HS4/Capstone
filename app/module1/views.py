@@ -2,8 +2,10 @@ from flask import Blueprint, render_template, request, jsonify, send_file
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
+import base64
 # import folium
 import numpy as np
+from io import BytesIO
 from dotenv import load_dotenv
 import os, io
 import mysql.connector
@@ -15,12 +17,22 @@ bp = Blueprint('main', __name__, template_folder='templates')
 
 load_dotenv()
     
+# DB 연결 생성
+def get_db_connection():
+    connection = mysql.connector.connect(
+        host=os.getenv('DB_HOST', 'localhost'),
+        user=os.getenv('DB_USER', 'username'),
+        password=os.getenv('DB_PASSWORD', 'password'),
+        database=os.getenv('DB_NAME', 'capstone')
+    )
+    return connection
+
+
 # 메인 페이지
-@bp.route('/')
 @bp.route('/page')
 def index():
     # 데이터베이스 연결
-    connection = connect_to_database()
+    connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
     
     query = '''SELECT regionCode1, ROUND(AVG(pm10Value)) AS pm10Value
@@ -118,16 +130,6 @@ def predictions():
 def FAQ():
     return render_template('faq.html')
 
-
-def connect_to_database():
-    return mysql.connector.connect(
-        host='localhost',
-        user='username',
-        password='password',
-        database='capstone',
-        port=3306  # MySQL 포트
-    )
-    
 @bp.route('/download_current', methods=['POST'])
 def download_current():
     data_folder = os.path.join(os.path.dirname(__file__), 'static', 'data')
@@ -253,5 +255,9 @@ def download_data():
         df.to_csv(output, index=False)
         output.seek(0)
         return send_file(io.BytesIO(output.getvalue().encode()), mimetype='text/csv',
+<<<<<<< HEAD
+                         attachment_filename='data.csv', as_attachment=True)
+=======
                          attachment_filename='data.csv', as_attachment=True)
     
+>>>>>>> main
